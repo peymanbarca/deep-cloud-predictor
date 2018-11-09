@@ -74,6 +74,7 @@ if __name__=='__main__':
     seq_len = 15
     imf_index=2
     norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
+    
 
     X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test,MaxAbsScalerObj =\
         Train_LSTM.load_data(seq_len,imf_index,norm_version)
