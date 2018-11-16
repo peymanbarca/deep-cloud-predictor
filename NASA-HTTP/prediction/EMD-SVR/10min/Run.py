@@ -18,7 +18,7 @@ cur=conn.cursor()
 
 
 norm_Ver=1
-imf_index=16
+imf_index=15
 ts,num_req_normalize,MaxAbsScalerObj=normalizer(imf_index,norm_Ver,False)
 reqs = [j for i in num_req_normalize for j in i]
 print(len(reqs),len(ts))
