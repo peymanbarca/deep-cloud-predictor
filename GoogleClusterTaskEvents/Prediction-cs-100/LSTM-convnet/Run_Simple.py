@@ -10,29 +10,32 @@ from time import sleep
 
 def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map):
     fig = plt.figure(facecolor='white',figsize=(13.0, 8.0))
-    ax = fig.add_subplot(311)
-    ax.plot(ts_train, y_train,color='red', label='Train Data')
-    ax.plot(ts_test,true_data, label='True Test Data')
-    plt.plot(ts_test,predicted_data,color='green', label='Prediction , MSE  = '+str(ms)+ ' , MAPE = '+str(map))
+    ax = fig.add_subplot(211)
+    ax.plot(ts_train, y_train,color='red',alpha=0.8, label='Train Data')
+    ax.plot(ts_test,true_data, label='Real Test Data',color='blue',alpha=0.3)
+    plt.plot(ts_test,predicted_data,color='green',alpha=0.8, label='Prediction , MSE  = '+str(ms)+ ' , MAPE = '+str(map))
     plt.legend()
     plt.grid()
     plt.ylim([0,1])
-    plt.ylabel('Normalized CPU Req')
-    ax = fig.add_subplot(312)
-    ax.plot(ts_test, true_data, label='True Test Data')
+    plt.ylabel('Normalized RAM Requests')
+    #plt.xlabel('Time Symbol')
+    ax = fig.add_subplot(212)
+    ax.plot(ts_test, true_data, label='Real Test Data',color='blue',alpha=0.3)
+    plt.plot(ts_test, predicted_data, color='green', label='Prediction',alpha=0.75)
     plt.legend()
     plt.grid()
     plt.ylim([0, 1])
-    plt.ylabel('Normalized CPU Req')
-    ax = fig.add_subplot(313)
-    plt.plot(ts_test, predicted_data, color='green', label='Prediction')
-    plt.legend()
-    plt.grid()
-    plt.ylim([0, 1])
+    plt.ylabel('Normalized RAM Requests')
     plt.xlabel('Time Symbol')
-    plt.ylabel('Normalized CPU Req')
+    # ax = fig.add_subplot(313)
+    # plt.plot(ts_test, predicted_data, color='green', label='Prediction')
+    # plt.legend()
+    # plt.grid()
+    # plt.ylim([0, 1])
+    # plt.xlabel('Time Symbol')
+    # plt.ylabel('Normalized CPU Req')
     #
-    plt.savefig('CPU.png', format='png', dpi=600)
+    plt.savefig('RAM.png', format='png', dpi=800)
     plt.show()
 
 
@@ -42,7 +45,7 @@ if __name__=='__main__':
     epochs = 50
     seq_len =25
     factor=0.8
-    mode=1 ## 1 for CPU, 2 for RAM
+    mode=2 ## 1 for CPU, 2 for RAM
 
     X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test = \
         Train_LSTM.load_data(seq_len,mode,factor,first_plot=True)
