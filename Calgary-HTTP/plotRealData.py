@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore")
 hostname = 'localhost'
 username = 'postgres'
 password = 'inter2010'
-database = 'cloud_load'
+database = 'load_cloud'
 
 conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
 cur0 = conn.cursor()

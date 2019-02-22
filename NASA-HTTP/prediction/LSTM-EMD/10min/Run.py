@@ -10,7 +10,7 @@ from denorm import denorm_v2
 hostname = 'localhost'
 username = 'postgres'
 password = 'inter2010'
-database = 'cloud_load'
+database = 'load_cloud'
 
 conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
 cur=conn.cursor()

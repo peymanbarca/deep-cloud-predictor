@@ -11,14 +11,14 @@ import psycopg2
 hostname = 'localhost'
 username = 'postgres'
 password = 'inter2010'
-database = 'cloud_load'
+database = 'load_cloud'
 
 conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
 cur=conn.cursor()
 
 
 norm_Ver=1
-imf_index=17
+imf_index=3
 ts,num_req_normalize,MaxAbsScalerObj=normalizer(imf_index,norm_Ver,False)
 reqs = [j for i in num_req_normalize for j in i]
 print(len(reqs),len(ts))
