@@ -20,10 +20,10 @@ cur.execute('select * from google_ram_req_200 order by ts')
 data2=np.array(cur.fetchall())
 ram=data2[:,1]
 
-print('****** Start to EMD Analysis for CPU ...')
+print('****** Start to 5min Analysis for CPU ...')
 emd = EMD()
 IMFs = emd(np.array(cpu, dtype=float))
-print('****** EMD Analysis Completed! ')
+print('****** 5min Analysis Completed! ')
 num_of_IMF = len(IMFs)
 print('total number of IMFs are', num_of_IMF)
 imf_lens = []
@@ -43,10 +43,10 @@ for imf_index in range(len(IMFs)):
             plt.title('imf # ' + str(imf_index + 1))
             plt.show()
 
-print('****** Start to EMD Analysis for RAM ...')
+print('****** Start to 5min Analysis for RAM ...')
 emd = EMD()
 IMFs = emd(np.array(ram, dtype=float))
-print('****** EMD Analysis Completed! ')
+print('****** 5min Analysis Completed! ')
 num_of_IMF = len(IMFs)
 print('total number of IMFs are', num_of_IMF)
 imf_lens = []
