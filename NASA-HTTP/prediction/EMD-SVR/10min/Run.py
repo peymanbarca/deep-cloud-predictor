@@ -37,7 +37,7 @@ df = create_lags(df,20)
 
 # the first 10 days will have missing values. can't use them.
 df = df.dropna()
-print(df.head(10))
+#print(df.head(10))
 
 # create X and y
 y = df.requests.values
@@ -57,8 +57,8 @@ clf = SVR()
 clf.fit(X_train, y_train)
 
 y_pred=clf.predict(X_test)
-print(len(X_test),len(y_pred),len(y_test),len(ts_test),len(ts_train),len(X_train),len(y_train))
-print('-----')
+#print(len(X_test),len(y_pred),len(y_test),len(ts_test),len(ts_train),len(X_train),len(y_train))
+#print('-----')
 
 
 from sklearn.metrics import mean_squared_error
@@ -68,44 +68,66 @@ rms=sqrt(ms)
 print('MSE is ', ms)
 print(' ------------------------------------')
 
+def f1(a, N):
+    return np.argsort(a)[::-1][:N]
+
+
+def f2(a, N):
+    return np.argsort(a)[:N]
 
 def mean_absolute_percentage_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true),  np.array(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
+    #y_true, y_pred = np.array(y_true),  np.array(y_pred)
+    z1 = f1(y_true, 10)
     ape = []
     for k in range(len(y_true)):
-        if y_pred[k] > 1e-3 and y_true[k] > 1e-3:
+        if y_true[k] != 0 and k not in z1:
             ape.append(    abs((y_pred[k] - y_true[k])  / y_true[k] ))
 
     return np.mean(np.array(ape)) * 100
 
 def mean_percentage_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
     y_true, y_pred = np.array(y_true),  np.array(y_pred)
+    z1 = f1(y_true, 10)
     ape = []
     for k in range(len(y_true)):
-        if y_pred[k] > 1e-3 and y_true[k] > 1e-3:
+        if y_true[k] != 0 and k not in z1:
             ape.append(    ((y_pred[k] - y_true[k])  / y_true[k] ))
 
     return np.mean(np.array(ape)) * 100
 
 
 def median_absolute_percentage_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     y_true, y_pred = np.array(y_true), np.array(y_pred)
+    z1 = f1(y_true, 10)
     ape = []
     for k in range(len(y_true)):
-        if y_pred[k] > 1e-3 and y_true[k] > 1e-3:
+        if y_true[k] !=0 :
             ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
 
     return np.median(np.array(ape)) * 100
 
+
+def mean_percentage_r_error(y_true, y_pred):
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
+    y_true, y_pred = np.abs(y_true) , np.abs(y_pred)
+    z1 = f1(y_true, 10)
+    ape = []
+    for k in range(len(y_true)):
+        if y_true[k] != 0 and k not in z1:
+            ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
+    return sqrt(np.mean(np.array(ape)))
 
 mpe = mean_percentage_error(y_test, y_pred)
 map = mean_absolute_percentage_error(y_test, y_pred)
 print('MAPE is ', map)
 meap = median_absolute_percentage_error(y_test, y_pred)
 print('MEAPE is ', meap)
+rmsre = mean_percentage_r_error(y_test, y_pred)
+print('RMSRE is ', rmsre)
 
 fig = plt.figure(facecolor='white',figsize=(10, 8))
 plt.subplot(3,1,1)
@@ -117,7 +139,7 @@ plt.subplot(3,1,2)
 plt.plot(y_test,label='Test Data',color='orange')
 plt.legend()
 plt.subplot(3,1,3)
-plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f ,  RMSE=%.4f , MPE=%.4f ,  MEAPE=%.4f '% (map,rms,mpe,meap))
+plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%% , RMSRE=%.4f '% (map,rms,mpe,meap,rmsre))
 plt.legend()
 plt.savefig('results/imf' + str(imf_index) + '/normalize' + '.png', dpi=900)
 plt.pause(5)
@@ -137,6 +159,7 @@ print('MEAPE in original scale is ', meap_denormalize)
 rms_denormalize = sqrt(mean_squared_error(ts_test_revert, ts_predicted_revert))
 print('RMSE in original scale is ', rms_denormalize)
 mpe_denorm = mean_percentage_error(ts_test_revert, ts_predicted_revert)
+rmsre_denorm = mean_percentage_r_error(ts_test_revert, ts_predicted_revert)
 print(' ------------------------------------')
 
 fig = plt.figure(facecolor='white',figsize=(10, 8))
@@ -148,8 +171,8 @@ plt.subplot(3,1,2)
 plt.plot(ts_test_revert,label='Test Real Data',color='orange')
 plt.legend()
 plt.subplot(3,1,3)
-plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f , '
-                                   ' RMSE=%.4f , MPE=%.4f ,  MEAPE=%.4f '% (map_denormalize,rms_denormalize,mpe_denorm,meap_denormalize))
+plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f%% ,\n '
+                                   ' RMSE=%.4f , MPE=%.4f%% , RMSRE=%.4f  '% (map_denormalize,rms_denormalize,mpe_denorm,rmsre_denorm))
 plt.legend()
 plt.savefig('results/imf' + str(imf_index) + '/original' + '.png', dpi=900)
 plt.pause(5)

@@ -70,10 +70,10 @@ def write_prediction_to_db(ts_test,y_test,y_pred,imf):
 
 if __name__=='__main__':
     global_start_time = time.time()
-    epochs = 120
+    epochs = 100
     seq_len = 10
-    imf_index=3
-    norm_version=2  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
+    imf_index=16
+    norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
     X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test,MaxAbsScalerObj =\
         Train_LSTM.load_data(seq_len,imf_index,norm_version)
@@ -82,7 +82,7 @@ if __name__=='__main__':
 
     model = Train_LSTM.build_model([1, seq_len, 20,1])
     from keras.utils.vis_utils import plot_model
-    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+    #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)

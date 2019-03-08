@@ -18,7 +18,7 @@ cur=conn.cursor()
 
 
 norm_Ver=1
-imf_index=3
+imf_index=17
 ts,num_req_normalize,MaxAbsScalerObj=normalizer(imf_index,norm_Ver,False)
 reqs = [j for i in num_req_normalize for j in i]
 print(len(reqs),len(ts))
@@ -71,32 +71,32 @@ print(' ------------------------------------')
 
 def mean_absolute_percentage_error(y_true, y_pred):
     y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true),  np.array(y_pred)
+    y_true, y_pred = np.abs(y_true),  np.abs(y_pred)
     ape = []
     for k in range(len(y_true)):
-        if y_pred[k] > 1e-3 and y_true[k] > 1e-3:
-            ape.append(    abs((y_pred[k] - y_true[k])  / y_true[k] ))
+        if y_pred[k] !=0:
+            ape.append(    abs((y_pred[k] - y_true[k])  / y_pred[k] ))
 
     return np.mean(np.array(ape)) * 100
 
 def mean_percentage_error(y_true, y_pred):
     y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true),  np.array(y_pred)
+    y_true, y_pred = np.abs(y_true),  np.abs(y_pred)
     ape = []
     for k in range(len(y_true)):
-        if y_pred[k] > 1e-3 and y_true[k] > 1e-3:
-            ape.append(    ((y_pred[k] - y_true[k])  / y_true[k] ))
+        if y_pred[k] != 0:
+            ape.append(    ((y_pred[k] - y_true[k])  / y_pred[k] ))
 
     return np.mean(np.array(ape)) * 100
 
 
 def median_absolute_percentage_error(y_true, y_pred):
     y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     ape = []
     for k in range(len(y_true)):
-        if y_pred[k] > 1e-3 and y_true[k] > 1e-3:
-            ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
+        if y_pred[k] != 0:
+            ape.append(abs((y_pred[k] - y_true[k]) / y_pred[k]))
 
     return np.median(np.array(ape)) * 100
 
@@ -117,7 +117,7 @@ plt.subplot(3,1,2)
 plt.plot(y_test,label='Test Data',color='orange')
 plt.legend()
 plt.subplot(3,1,3)
-plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f ,  RMSE=%.4f , MPE=%.4f ,  MEAPE=%.4f '% (map,rms,mpe,meap))
+plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% '% (map,rms,mpe))
 plt.legend()
 plt.savefig('results/imf' + str(imf_index) + '/normalize' + '.png', dpi=900)
 plt.pause(5)
@@ -148,8 +148,8 @@ plt.subplot(3,1,2)
 plt.plot(ts_test_revert,label='Test Real Data',color='orange')
 plt.legend()
 plt.subplot(3,1,3)
-plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f , '
-                                   ' RMSE=%.4f , MPE=%.4f ,  MEAPE=%.4f '% (map_denormalize,rms_denormalize,mpe_denorm,meap_denormalize))
+plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f%% , '
+                                   ' RMSE=%.4f , MPE=%.4f%%  '% (map_denormalize,rms_denormalize,mpe_denorm))
 plt.legend()
 plt.savefig('results/imf' + str(imf_index) + '/original' + '.png', dpi=900)
 plt.pause(5)

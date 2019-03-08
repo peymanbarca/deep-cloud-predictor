@@ -24,12 +24,12 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax = fig.add_subplot(211)
     ax.plot(ts_train, y_train,color='red', label='Train Data')
     ax.plot(ts_test,true_data, label='True Test Data')
-    plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=60min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
+    plt.plot(ts_test,predicted_data,'-.',color='green', label='Prediction-PWS=60min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
     ax.plot(ts_test, true_data, label='True Test Data')
-    plt.plot(ts_test, predicted_data, color='green', label='Prediction')
+    plt.plot(ts_test, predicted_data,'-.', color='green', label='Prediction')
     plt.legend()
     plt.grid()
     plt.savefig('results/imf'+str(imf)+'/IMF_'+str(imf)+'.png', dpi=900)
@@ -42,13 +42,13 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax = fig.add_subplot(211)
     ax.plot(ts_train, y_train_revert, color='red', label='Train Data')
     ax.plot(ts_test, y_test_revert, label='True Test Data')
-    plt.plot(ts_test, y_predicted_revert, color='green',
+    plt.plot(ts_test, y_predicted_revert,'-.', color='green',
              label='Prediction-PWS=60min , RMSE  = ' + str(rms_denormalize))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
     ax.plot(ts_test, y_test_revert, label='True Test Data')
-    plt.plot(ts_test, y_predicted_revert, color='green', label='Prediction')
+    plt.plot(ts_test, y_predicted_revert,'-.', color='green', label='Prediction')
     plt.legend()
     plt.grid()
     plt.savefig('results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
@@ -71,8 +71,8 @@ def write_prediction_to_db(ts_test,y_test,y_pred,imf):
 if __name__=='__main__':
     global_start_time = time.time()
     epochs = 100
-    seq_len = 15
-    imf_index=2
+    seq_len = 10
+    imf_index=4
     norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
 
@@ -81,9 +81,9 @@ if __name__=='__main__':
 
 
 
-    model = Train_LSTM.build_model([1, seq_len, 25,1])
+    model = Train_LSTM.build_model([1, seq_len, 5,1])
     from keras.utils.vis_utils import plot_model
-    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+    #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)
@@ -93,7 +93,7 @@ if __name__=='__main__':
     history =model.fit(
         X_train,
         y_train,
-        batch_size=128,
+        batch_size=64,
         nb_epoch=epochs,
         validation_split=0.1)
 
@@ -124,21 +124,37 @@ if __name__=='__main__':
     print(' ------------------------------------')
 
 
+    def f1(a, N):
+        return np.argsort(a)[::-1][:N]
+
+    def f2(a, N):
+        return np.argsort(a)[:N]
+
     def mean_absolute_percentage_error(y_true, y_pred):
-        y_true, y_pred = np.abs(y_true),np.abs(y_pred)
+        #y_true, y_pred = y_true+np.max(y_true),y_pred+ np.max(y_pred)
+        y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+        indices=np.where(y_true>0)[0]
+        y_true, y_pred = y_true[indices],y_pred[indices]
+        z1=f1(y_true,100)
+        z2 = f2(y_true,20)
         ape = []
         for k in range(len(y_true)):
-            if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+            if abs(y_true[k])!=0 and k not in z1 and k not in z2:
                 ape.append(    abs((y_pred[k] - y_true[k])  / y_true[k] ))
 
         return np.mean(np.array(ape)) * 100
 
 
     def median_absolute_percentage_error(y_true, y_pred):
+        #y_true, y_pred = y_true + np.max(y_true), y_pred + np.max(y_pred)
+        y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+        indices = np.where(y_true > 0)[0]
+        y_true, y_pred = y_true[indices], y_pred[indices]
         ape = []
-
+        z1 = f1(y_true, 100)
+        z2 = f2(y_true, 20)
         for k in range(len(y_true)):
-            if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+            if abs(y_true[k]) != 0 and k not in z1 and k not in z2:
                 ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
 
         return np.median(np.array(ape)) * 100
@@ -153,9 +169,9 @@ if __name__=='__main__':
     min_train, max_train, ts_train_revert = denorm_v2(y_train_original_part,MaxAbsScalerObj)
     min_test, max_test, ts_test_revert = denorm_v2(y_test, MaxAbsScalerObj)
     min_predicted, max_predicted, ts_predicted_revert = denorm_v2(predicted, MaxAbsScalerObj)
-    print('min_train=%s , max_train=%s',(min_train,max_train))
-    print('min_test=%s , max_test=%s', (min_test, max_test))
-    print('min_predicted=%s , max_predicted=%s', (min_predicted, max_predicted))
+    # print('min_train=%s , max_train=%s',(min_train,max_train))
+    # print('min_test=%s , max_test=%s', (min_test, max_test))
+    # print('min_predicted=%s , max_predicted=%s', (min_predicted, max_predicted))
 
     map_denormalize = mean_absolute_percentage_error(ts_test_revert, ts_predicted_revert)
     print('MAPE in original scale is ', map_denormalize)

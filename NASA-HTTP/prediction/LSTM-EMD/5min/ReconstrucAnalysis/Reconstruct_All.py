@@ -20,7 +20,8 @@ cur0=conn.cursor()
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    # y_true, y_pred = np.array(y_true) + np.min(y_true), np.array(y_pred) + np.min(y_pred)
+    y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
@@ -29,7 +30,8 @@ def mean_absolute_percentage_error(y_true, y_pred):
 
 def mean_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    # y_true, y_pred = np.array(y_true) + np.min(y_true), np.array(y_pred) + np.min(y_pred)
+    y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
@@ -38,13 +40,23 @@ def mean_percentage_error(y_true, y_pred):
 
 def median_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    # y_true, y_pred = np.array(y_true) + np.min(y_true), np.array(y_pred) + np.min(y_pred)
+    y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
             ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
     return np.median(np.array(ape)) * 100
 
+def mean_percentage_r_error(y_true, y_pred):
+    # y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
+    y_true, y_pred = np.abs(y_true) , np.abs(y_pred)
+    ape = []
+    for k in range(len(y_true)):
+        if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+            ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
+    return sqrt(np.mean(np.array(ape)))
 
 train_ts=[]
 test_ts=[]
@@ -56,7 +68,7 @@ main_test_req_pred=[]
 
 
 
-for i in range(1,17):
+for i in range(3,17):
     print(i,' ...')
     emd_imf=i
 
@@ -105,6 +117,7 @@ rms = sqrt(mean_squared_error(main_test_req_, main_test_req_pred_))
 MPE=mean_percentage_error(main_test_req_,main_test_req_pred_)
 MAPE=mean_absolute_percentage_error(main_test_req_,main_test_req_pred_)
 MEAPE=median_absolute_percentage_error(main_test_req_,main_test_req_pred_)
+RMSRE=mean_percentage_r_error(main_test_req_,main_test_req_pred_)
 
 fig = plt.figure(facecolor='white',figsize=(12, 7))
 ax = fig.add_subplot(211)
@@ -114,14 +127,14 @@ plt.plot(test_ts, main_test_req_, '-', color='blue',alpha=0.7,
 plt.plot(test_ts,main_test_req_pred_,'-',color='green',
          label='Prediction Req')
 ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req')
-plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.7,
-         label=('Prediction Req, MAPE = %.4f ,  RMSE=%.4f , MPE=%.4f ,  MEAPE=%.4f '% (MAPE,rms,MPE,MEAPE)))
+plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.7)
+plt.plot(ts,main_test_req_pred_,'-',color='green',
+         label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('../results/main_reconstruct' + '.png', dpi=600)
-plt.pause(7)
+plt.savefig('../results/main_reconstruct_from_imf3' + '.png', dpi=600)
+plt.pause(10)
 plt.close()
 
