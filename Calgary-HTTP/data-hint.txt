@@ -1,0 +1,22 @@
+Calgary:
+
+            PWD=10min       30min       60min
+            length=33736    14064       7635    --> almost 318 day
+            EMDs: 22        20          17
+
+LSTM+EMD    ?               ?           done
+    train_len = 90%
+    (2 layer stacked, seq_len=10, layers=[1,seq_len,5,1],dropout=0.1,recurrent_dropout=0.5)
+
+LSTM+EMD    ?               ?           ?
+    grid-search train_len = 90%
+    (2 layer stacked, seq_len=5,10,15,20 layers=[1,seq_len,[5,10,20,40],1],dropout=0.1,recurrent_dropout=0.5)
+
+SVR+EMD     ?               ?           done without aggregate
+ train_len = 90%
+ (seq_len=20, without c epsilon & rbf kernel, fitted on train seq data predict on test data)
+
+
+SVR+EMD     ?               ?           ?
+ train_len = 90%
+ (seq_len=10,20,30 and grid-search fitted on train seq data predict on test data)
