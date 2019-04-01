@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 
 ''' Read Raw Data '''
-data = np.array(pd.read_csv('E:/ThesisNew/Thesis/Data/NASA/NASA_access_log_Aug95/nasa.csv',sep ='- -'))
+data = np.array(pd.read_csv('/home/vacek/Cloud/ThesisNew/Thesis/Data/NASA/NASA_access_log_Aug95/nasa.csv',sep ='- -'))
 domains=data[:,0]
 timestamps=[]
 ids=[]

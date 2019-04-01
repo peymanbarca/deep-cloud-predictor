@@ -18,7 +18,7 @@ cur=conn.cursor()
 
 
 norm_Ver=1
-imf_index=12
+imf_index=5
 ts,num_req_normalize,MaxAbsScalerObj=normalizer(imf_index,norm_Ver,False)
 reqs = [j for i in num_req_normalize for j in i]
 print(len(reqs),len(ts))
@@ -32,10 +32,10 @@ def create_lags(df, N):
         df['Lag' + str(i+1)] = df.requests.shift(i+1)
     return df
 
-# create 10 lags
+# create 20 lags
 df = create_lags(df,20)
 
-# the first 10 days will have missing values. can't use them.
+
 df = df.dropna()
 #print(df.head(10))
 
@@ -44,6 +44,19 @@ y = df.requests.values
 # X = df.ts.values
 X = df.iloc[:, 1:].values
 
+print('some samples of sequenses are:\n')
+
+print(reqs[:60])
+print(X[0])
+print(X[1])
+print(X[2])
+print(y[0])
+print(y[1])
+print(y[2])
+print('********************')
+
+print('length of sequenses are :')
+print(len(X),len(X[0]),len(y))
 
 # Train on 90% of the data
 train_idx = int(len(df) * .9)
@@ -53,10 +66,13 @@ X_train, y_train, X_test, y_test = X[:train_idx], y[:train_idx], X[train_idx:], 
 ts_train,ts_test=ts[:train_idx], ts[train_idx:][20:]
 
 # fit and predict
-clf = SVR()
+clf = SVR(kernel='rbf',C=0.8,epsilon=0.1)
 clf.fit(X_train, y_train)
 
 y_pred=clf.predict(X_test)
+score=clf.score(X_test,y_pred)
+print(score)
+print('length of output data are : ')
 print(len(X_test),len(y_pred),len(y_test),len(ts_test),len(ts_train),len(X_train),len(y_train))
 print('-----')
 
