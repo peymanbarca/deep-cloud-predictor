@@ -20,21 +20,21 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
 
 
     # ------------------- plot normalize Data --------------
-    fig = plt.figure(facecolor='white',figsize=(10, 8))
-    ax = fig.add_subplot(211)
-    ax.plot(ts_train, y_train,color='red', label='Train Data')
-    ax.plot(ts_test,true_data, label='True Test Data')
-    plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=20min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
-    plt.legend()
-    plt.grid()
-    ax = fig.add_subplot(212)
-    ax.plot(ts_test, true_data, label='True Test Data')
-    plt.plot(ts_test, predicted_data, color='green', label='Prediction')
-    plt.legend()
-    plt.grid()
-    plt.savefig('results/imf'+str(imf)+'/IMF_'+str(imf)+'.png', dpi=900)
-    plt.pause(3)
-    plt.close()
+    # fig = plt.figure(facecolor='white',figsize=(10, 8))
+    # ax = fig.add_subplot(211)
+    # ax.plot(ts_train, y_train,color='red', label='Train Data')
+    # ax.plot(ts_test,true_data, label='True Test Data')
+    # plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=1min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
+    # plt.legend()
+    # plt.grid()
+    # ax = fig.add_subplot(212)
+    # ax.plot(ts_test, true_data, label='True Test Data')
+    # plt.plot(ts_test, predicted_data, color='green', label='Prediction')
+    # plt.legend()
+    # plt.grid()
+    # plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-EMD/1min/main/results/imf'+str(imf)+'/IMF_'+str(imf)+'.png', dpi=900)
+    # plt.pause(3)
+    # plt.close()
 
 
     # ------------------- plot denormalize Data --------------
@@ -43,36 +43,36 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax.plot(ts_train, y_train_revert, color='red', label='Train Data')
     ax.plot(ts_test, y_test_revert, label='True Test Data')
     plt.plot(ts_test, y_predicted_revert, color='green',
-             label='Prediction-PWS=20min , RMSE  = ' + str(rms_denormalize))
+             label='Prediction-PWS=1min , RMSE  = ' + str(rms_denormalize))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
-    ax.plot(ts_test, y_test_revert, label='True Test Data')
-    plt.plot(ts_test, y_predicted_revert, color='green', label='Prediction')
+    ax.plot(ts_test, y_test_revert, label='True Test Data',alpha=0.9)
+    plt.plot(ts_test, y_predicted_revert, color='green', label='Prediction',alpha=0.4)
     plt.legend()
     plt.grid()
-    plt.savefig('results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-EMD/1min/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 
 def write_prediction_to_db(ts_test,y_test,y_pred,imf):
-    cur.execute('delete from nasa_http_emd_5min  where imf_index=%s and  num_req_pred is not null', \
+    cur.execute('delete from nasa_http_emd_1min  where imf_index=%s and  num_req_pred is not null', \
                 ([int(imf)]))
 
     conn.commit()
-    cur.execute('update nasa_http_emd_5min set num_req_pred=null where imf_index=%s', \
+    cur.execute('update nasa_http_emd_1min set num_req_pred=null where imf_index=%s', \
                 ( [int(imf)]))
     conn.commit()
     for k in range(len(ts_test)):
-        cur.execute('insert into nasa_http_emd_5min (ts,num_of_req,imf_index,num_req_pred) values(%s,%s,%s,%s) ',
+        cur.execute('insert into nasa_http_emd_1min (ts,num_of_req,imf_index,num_req_pred) values(%s,%s,%s,%s) ',
                     (int(ts_test[k]),int(y_test[k]),imf,float(y_pred[k])))
     conn.commit()
 
 if __name__=='__main__':
     global_start_time = time.time()
-    epochs = 100
+    epochs = 50
     seq_len = 10
-    imf_index=16
+    imf_index=20
     norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
     X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test,MaxAbsScalerObj =\
