@@ -4,7 +4,7 @@ NASA:
             length= 53390    27864      6427      3085          --> almost 22 day
             EMDs: 23        20          16          15
 
-LSTM+EMD    ?               ?           done      done
+LSTM+EMD    done               done          done      done
     train_len = 90%
     (2 layer stacked, seq_len=10, layers=[1,seq_len,20,1],dropout=0.1,recurrent_dropout=0.5)
 

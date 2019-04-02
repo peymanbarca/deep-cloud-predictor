@@ -16,8 +16,8 @@ cur0=conn.cursor()
 
 
 def mean_absolute_percentage_error(y_true, y_pred):
-    #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
+    y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
+    #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
@@ -25,8 +25,8 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.array(ape)) * 100
 
 def mean_percentage_error(y_true, y_pred):
-    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
+    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
@@ -34,8 +34,8 @@ def mean_percentage_error(y_true, y_pred):
     return np.mean(np.array(ape)) * 100
 
 def median_absolute_percentage_error(y_true, y_pred):
-    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
-    y_true, y_pred = np.array(y_true)+np.max(y_true), np.array(y_pred)+np.max(y_pred)
+    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = np.array(y_true)+np.max(y_true), np.array(y_pred)+np.max(y_pred)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:

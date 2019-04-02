@@ -1,6 +1,6 @@
 Calgary:
 
-            PWD=10min       30min       60min
+            PWs=10min       30min       60min
             length=33736    14064       7635    --> almost 318 day
             EMDs: 22        20          17
 

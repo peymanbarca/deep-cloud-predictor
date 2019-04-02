@@ -68,13 +68,13 @@ main_test_req_pred=[]
 
 
 
-for i in range(3,17):
+for i in range(3,24):
     print(i,' ...')
     emd_imf=i
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred from nasa_http_emd_5min where imf_index=%s and num_req_pred is not null'
+    cur0.execute('select ts,num_of_req,num_req_pred from nasa_http_emd_halfmin where imf_index=%s and num_req_pred is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
 
@@ -86,10 +86,10 @@ for i in range(3,17):
     main_test_req.append(list(num_req))
     main_test_req_pred.append(list(num_req_pred))
 
-    cur0.execute('select count(1) from nasa_http_emd_5min where imf_index=1 and num_req_pred is null')
+    cur0.execute('select count(1) from nasa_http_emd_halfmin where imf_index=1 and num_req_pred is null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from nasa_http_emd_5min where imf_index=%s and num_req_pred is  null '
+    cur0.execute('select ts,num_of_req from nasa_http_emd_halfmin where imf_index=%s and num_req_pred is  null '
                  ' order by ts limit %s', (int(emd_imf),int(total-len(test_ts))))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
@@ -127,8 +127,8 @@ plt.plot(test_ts, main_test_req_, '-', color='blue',alpha=0.7,
 plt.plot(test_ts,main_test_req_pred_,'-',color='green',
          label='Prediction Req')
 ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.7)
-plt.plot(ts,main_test_req_pred_,'-',color='green',
+plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.9)
+plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.4,
          label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
