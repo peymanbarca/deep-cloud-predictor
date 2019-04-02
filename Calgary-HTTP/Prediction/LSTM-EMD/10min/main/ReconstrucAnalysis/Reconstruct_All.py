@@ -25,59 +25,59 @@ def f2(a, N):
 
 
 def mean_absolute_percentage_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
     y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     # indices = np.where(y_true > 0)[1]
     # y_true, y_pred = y_true[indices], y_pred[indices]
-    z1 = f1(y_true, 20)
-    #z2 = f2(y_true, 20)
+    z1 = f1(y_true, 200)
+    z2 = f2(y_true, 200)
     ape = []
     for k in range(len(y_true)):
-        if abs(y_true[k]) != 0 and k not in z1:
+        if abs(y_pred[k]) > 1e-1 and abs(y_true[k]) > 1e-1 and k not in z1 and k not in z2:
             ape.append(abs(     (y_true[k] - y_pred[k]) / y_true[k]          ))
     return np.mean(np.array(ape)) * 100
 
 def mean_percentage_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
     y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     #indices = np.where(y_true > 0)[1]
     #y_true, y_pred = y_true[indices], y_pred[indices]
-    z1 = f1(y_true, 20)
-    #z2 = f2(y_true, 20)
+    z1 = f1(y_true, 200)
+    z2 = f2(y_true, 200)
     ape = []
     for k in range(len(y_true)):
-        if abs(y_true[k]) != 0 and k not in z1:
+        if abs(y_pred[k]) > 1e-1 and abs(y_true[k]) > 1e-1 and k not in z1 and k not in z2:
             ape.append((     (y_true[k] - y_pred[k]) / y_true[k]          ))
     return np.mean(np.array(ape)) * 100
 
 def median_absolute_percentage_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
     y_true, y_pred = np.abs(y_true), np.abs(y_pred)
     #indices = np.where(y_true > 0)[1]
     #y_true, y_pred = y_true[indices], y_pred[indices]
-    z1 = f1(y_true, 20)
-    #z2 = f2(y_true, 20)
+    z1 = f1(y_true, 200)
+    z2 = f2(y_true, 200)
     ape = []
     for k in range(len(y_true)):
-        if abs(y_true[k]) != 0 and k not in z1:
+        if abs(y_pred[k]) > 1e-1 and abs(y_true[k]) > 1e-1 and k not in z1 and k not in z2:
             ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
     return np.median(np.array(ape)) * 100
 
 
 def mean_percentage_r_error(y_true, y_pred):
-    y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
     y_true, y_pred = np.abs(y_true) , np.abs(y_pred)
     #indices = np.where(y_true > 0)[1]
     #y_true, y_pred = y_true[indices], y_pred[indices]
-    z1 = f1(y_true, 20)
-    #z2 = f2(y_true, 20)
+    z1 = f1(y_true, 200)
+    z2 = f2(y_true, 200)
     ape = []
     for k in range(len(y_true)):
-        if abs(y_true[k]) != 0 and k not in z1:
+        if abs(y_pred[k]) > 1e-1 and abs(y_true[k]) > 1e-1 and k not in z1 and k not in z2:
             ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
     return sqrt(np.mean(np.array(ape)))
 
@@ -90,13 +90,13 @@ main_test_req_pred=[]
 
 
 
-for i in range(4,18):
+for i in range(3,23):
     print(i,' ...')
     emd_imf=i
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred from calgary_http_emd_60min where imf_index=%s and num_req_pred is not null'
+    cur0.execute('select ts,num_of_req,num_req_pred from calgary_http_emd_10min where imf_index=%s and num_req_pred is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
 
@@ -108,10 +108,10 @@ for i in range(4,18):
     main_test_req.append(list(num_req))
     main_test_req_pred.append(list(num_req_pred))
 
-    cur0.execute('select count(1) from calgary_http_emd_60min where imf_index=1 and num_req_pred is null')
+    cur0.execute('select count(1) from calgary_http_emd_10min where imf_index=1 and num_req_pred is null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from calgary_http_emd_60min where imf_index=%s and num_req_pred is  null '
+    cur0.execute('select ts,num_of_req from calgary_http_emd_10min where imf_index=%s and num_req_pred is  null '
                  ' order by ts limit %s', (int(emd_imf),int(total-len(test_ts))))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
@@ -147,19 +147,19 @@ RMSRE=mean_percentage_r_error(main_test_req_,main_test_req_pred_)
 fig = plt.figure(facecolor='white',figsize=(12, 7))
 ax = fig.add_subplot(211)
 plt.plot(ts_train,main_train_req__,color='red',label='Real Req Train Data')
-plt.plot(test_ts, main_test_req_, color='blue',alpha=0.3,
+plt.plot(test_ts, main_test_req_, color='blue',alpha=0.9,
          label='Test Req')
-plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
+plt.plot(test_ts,main_test_req_pred_,'-.',color='green',alpha=0.5,
          label='Prediction Req')
 ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,color='blue',label='Real Req',alpha=0.3)
-plt.plot(ts,main_test_req_pred_,'-',color='green',
+plt.plot(ts,main_test_req_,color='orange',label='Real Req',alpha=0.9)
+plt.plot(ts,main_test_req_pred_,'-',color='brown',alpha=0.5,
          label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('../results/main_reconstruct_from_imf4' + '.png', dpi=600)
+plt.savefig('../results/main_reconstruct_from_imf3' + '.png', dpi=600)
 plt.pause(10)
 plt.close()
 

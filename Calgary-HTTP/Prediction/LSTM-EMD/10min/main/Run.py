@@ -20,21 +20,21 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
 
 
     # ------------------- plot normalize Data --------------
-    fig = plt.figure(facecolor='white',figsize=(10, 8))
-    ax = fig.add_subplot(211)
-    ax.plot(ts_train, y_train,color='red', label='Train Data')
-    ax.plot(ts_test,true_data, label='True Test Data')
-    plt.plot(ts_test,predicted_data,'-.',color='green', label='Prediction-PWS=10min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
-    plt.legend()
-    plt.grid()
-    ax = fig.add_subplot(212)
-    ax.plot(ts_test, true_data, label='True Test Data')
-    plt.plot(ts_test, predicted_data,'-.', color='green', label='Prediction')
-    plt.legend()
-    plt.grid()
-    plt.savefig('results/imf'+str(imf)+'/IMF_'+str(imf)+'.png', dpi=900)
-    plt.pause(3)
-    plt.close()
+    # fig = plt.figure(facecolor='white',figsize=(10, 8))
+    # ax = fig.add_subplot(211)
+    # ax.plot(ts_train, y_train,color='red', label='Train Data')
+    # ax.plot(ts_test,true_data, label='True Test Data')
+    # plt.plot(ts_test,predicted_data,'-.',color='green', label='Prediction-PWS=10min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
+    # plt.legend()
+    # plt.grid()
+    # ax = fig.add_subplot(212)
+    # ax.plot(ts_test, true_data, label='True Test Data')
+    # plt.plot(ts_test, predicted_data,'-.', color='green', label='Prediction')
+    # plt.legend()
+    # plt.grid()
+    # plt.savefig('results/imf'+str(imf)+'/IMF_'+str(imf)+'.png', dpi=900)
+    # plt.pause(3)
+    # plt.close()
 
 
     # ------------------- plot denormalize Data --------------
@@ -42,16 +42,16 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax = fig.add_subplot(211)
     ax.plot(ts_train, y_train_revert, color='red', label='Train Data')
     ax.plot(ts_test, y_test_revert, label='True Test Data')
-    plt.plot(ts_test, y_predicted_revert,'-.', color='green',
+    plt.plot(ts_test, y_predicted_revert,'-.', color='green',alpha=0.9,
              label='Prediction-PWS=10min , RMSE  = ' + str(rms_denormalize))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
-    ax.plot(ts_test, y_test_revert, label='True Test Data')
-    plt.plot(ts_test, y_predicted_revert,'-.', color='green', label='Prediction')
+    ax.plot(ts_test, y_test_revert,color='brown', label='True Test Data',alpha=0.4)
+    plt.plot(ts_test, y_predicted_revert,'-.', color='orange', label='Prediction',alpha=0.9)
     plt.legend()
     plt.grid()
-    plt.savefig('results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-EMD/10min/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 
@@ -70,9 +70,9 @@ def write_prediction_to_db(ts_test,y_test,y_pred,imf):
 
 if __name__=='__main__':
     global_start_time = time.time()
-    epochs = 100
+    epochs = 30
     seq_len = 10
-    imf_index=4
+    imf_index=22
     norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
 
@@ -81,7 +81,7 @@ if __name__=='__main__':
 
 
 
-    model = Train_LSTM.build_model([1, seq_len, 5,1])
+    model = Train_LSTM.build_model([1, seq_len, 20,1])
     from keras.utils.vis_utils import plot_model
     #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
@@ -93,7 +93,7 @@ if __name__=='__main__':
     history =model.fit(
         X_train,
         y_train,
-        batch_size=64,
+        batch_size=1024,
         nb_epoch=epochs,
         validation_split=0.1)
 
@@ -112,7 +112,24 @@ if __name__=='__main__':
 
     # predictions = lstm.predict_sequences_multiple(model, X_test, seq_len, 50)
     predicted = Train_LSTM.predict_point_by_point(model, X_test)
-    print(len(predicted),'------------')
+    print(len(predicted),'------------',X_test.shape)
+
+    # note that we can predict point by point each step using last true data!!!
+    predicted2 = []
+    for ii in range((X_test.shape[0])):
+        if ii > 1:
+            tmp = X_test[ii, :, :]
+            tmp[-1, :] = y_test[ii - 1]
+            input_seq = np.reshape(tmp,
+                                   (1, tmp.shape[0], tmp.shape[1]))
+        else:
+            input_seq = np.reshape(X_test[ii, :, :],
+                                   (1, X_test[ii, :, :].shape[0], X_test[ii, :, :].shape[1]))
+        # print(input_seq.shape)
+        y = Train_LSTM.predict_point_by_point(model, input_seq)
+        predicted2.append(y)
+    print(len(predicted2), '------------')
+    predicted = np.array(predicted2)
 
     print('Training duration (s) : ', time.time() - global_start_time)
     # plot_results_multiple(predictions, y_test, 50)
@@ -133,13 +150,13 @@ if __name__=='__main__':
     def mean_absolute_percentage_error(y_true, y_pred):
         #y_true, y_pred = y_true+np.max(y_true),y_pred+ np.max(y_pred)
         y_true, y_pred = np.abs(y_true), np.abs(y_pred)
-        indices=np.where(y_true>0)[0]
-        y_true, y_pred = y_true[indices],y_pred[indices]
-        z1=f1(y_true,100)
-        z2 = f2(y_true,20)
+        # indices=np.where(y_true>0)[0]
+        # y_true, y_pred = y_true[indices],y_pred[indices]
+        # z1=f1(y_true,100)
+        # z2 = f2(y_true,20)
         ape = []
         for k in range(len(y_true)):
-            if abs(y_true[k])!=0 and k not in z1 and k not in z2:
+            if abs(y_true[k])>1e-2:
                 ape.append(    abs((y_pred[k] - y_true[k])  / y_true[k] ))
 
         return np.mean(np.array(ape)) * 100
@@ -148,13 +165,13 @@ if __name__=='__main__':
     def median_absolute_percentage_error(y_true, y_pred):
         #y_true, y_pred = y_true + np.max(y_true), y_pred + np.max(y_pred)
         y_true, y_pred = np.abs(y_true), np.abs(y_pred)
-        indices = np.where(y_true > 0)[0]
-        y_true, y_pred = y_true[indices], y_pred[indices]
+        # indices = np.where(y_true > 0)[0]
+        # y_true, y_pred = y_true[indices], y_pred[indices]
         ape = []
-        z1 = f1(y_true, 100)
-        z2 = f2(y_true, 20)
+        # z1 = f1(y_true, 100)
+        # z2 = f2(y_true, 20)
         for k in range(len(y_true)):
-            if abs(y_true[k]) != 0 and k not in z1 and k not in z2:
+            if abs(y_true[k]) > 1e-2:
                 ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
 
         return np.median(np.array(ape)) * 100
@@ -185,10 +202,10 @@ if __name__=='__main__':
     model.save('my_model.h5')  # creates a HDF5 file 'my_model.h5'
     del model  # deletes the existing model
 
-    plt.plot(ts_test, ts_predicted_revert, color='green', label='Prediction')
-    plt.plot(ts_test, ts_test_revert, color='cyan', label='Test')
-    plt.pause(3)
-    plt.close()
+    # plt.plot(ts_test, ts_predicted_revert, color='green', label='Prediction')
+    # plt.plot(ts_test, ts_test_revert, color='cyan', label='Test')
+    # plt.pause(3)
+    # plt.close()
 
 
     print('writing to DB ! ...')

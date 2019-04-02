@@ -6,7 +6,7 @@ import warnings
 from numpy import newaxis
 from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM,Recurrent,SimpleRNN
-from keras.layers import Conv1D,MaxPooling1D
+from keras.layers import Conv1D,MaxPooling1D,Bidirectional
 from keras.models import Sequential
 from keras.optimizers import RMSprop
 
@@ -22,16 +22,16 @@ def build_model(layers):
     # model.add(MaxPooling1D(3))
     # model.add(Conv1D(32, 3, activation='relu'))
 
-    model.add(LSTM(
+    model.add(Bidirectional(LSTM(
         input_shape=(layers[1], layers[0]),
         output_dim=layers[1],
-        return_sequences=True,dropout=0.1,recurrent_dropout=0.5))
+        return_sequences=True,dropout=0.1,recurrent_dropout=0.5)))
     #model.add(Dropout(0.2))
 
 
-    model.add(LSTM(
+    model.add(Bidirectional(LSTM(
         layers[2],
-        return_sequences=False,dropout=0.1,recurrent_dropout=0.5))
+        return_sequences=False,dropout=0.1,recurrent_dropout=0.5)))
     #model.add(Dropout(0.2))
 
     # model.add(LSTM(
@@ -47,7 +47,7 @@ def build_model(layers):
     model.add(Activation("linear"))
 
     start = time.time()
-    model.compile(loss="mse", optimizer=RMSprop()) # mae or mse??
+    model.compile(loss="mae", optimizer=RMSprop()) # mae or mse??
     print("> Compilation Time : ", time.time() - start)
     return model
 
