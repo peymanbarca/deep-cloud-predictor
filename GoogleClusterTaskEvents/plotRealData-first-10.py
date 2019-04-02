@@ -146,10 +146,10 @@ def plot_4_all_cluster():
         cur1.execute('insert into google_cpu_req_200 values (%s,%s)', (int(time_stamp_symbol[kkk]), timeCpuReq[kkk]))
         conn.commit()
 
-    print('****** Start to 5min Analysis for CPU ...')
+    print('****** Start to 20min Analysis for CPU ...')
     emd = EMD()
     IMFs = emd(np.array(timeCpuReq, dtype=float))
-    print('****** 5min Analysis Completed! ')
+    print('****** 20min Analysis Completed! ')
     num_of_IMF = len(IMFs)
     print('total number of IMFs are', num_of_IMF)
     imf_lens = []
@@ -169,10 +169,10 @@ def plot_4_all_cluster():
             #plt.title('imf # ' + str(imf_index + 1))
             #plt.show()
 
-    print('****** Start to 5min Analysis for RAM ...')
+    print('****** Start to 20min Analysis for RAM ...')
     emd = EMD()
     IMFs = emd(np.array(timeRamReq, dtype=float))
-    print('****** 5min Analysis Completed! ')
+    print('****** 20min Analysis Completed! ')
     num_of_IMF = len(IMFs)
     print('total number of IMFs are', num_of_IMF)
     imf_lens = []
