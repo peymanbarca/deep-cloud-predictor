@@ -18,6 +18,12 @@ def norm_v1(ts):
     max2 = max(ts_normalize)
     return min1, max1, min2, max2, ts_normalize, MaxAbsScalerObj
 
+def norm_v1_single(ts):
+    from sklearn import preprocessing
+    MaxAbsScalerObj = preprocessing.MaxAbsScaler()
+    ts_normalize = MaxAbsScalerObj.fit_transform(ts.reshape(-1, 1))
+    return ts_normalize
+
 def norm_v2(ts):
     min1=min(ts)
     max1=max(ts)
