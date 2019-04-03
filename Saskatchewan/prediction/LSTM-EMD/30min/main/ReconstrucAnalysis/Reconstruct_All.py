@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import psycopg2
-from norm import norm_v2_single,norm_v1_single
+from norm import norm_v2_single
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 import itertools
@@ -24,7 +24,7 @@ def f1(a, N):
 def f2(a, N):
     return np.argsort(a)[:N]
 
-start_imf=1
+start_imf=5
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
@@ -110,13 +110,13 @@ main_test_req_pred=[]
 
 
 
-for i in range(start_imf,21):
+for i in range(start_imf,20):
     print(i,' ...')
     emd_imf=i
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred from saskatchewan_http_emd_10min where imf_index=%s and num_req_pred is not null'
+    cur0.execute('select ts,num_of_req,num_req_pred from saskatchewan_http_emd_30min where imf_index=%s and num_req_pred is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
 
@@ -128,10 +128,10 @@ for i in range(start_imf,21):
     main_test_req.append(list(num_req))
     main_test_req_pred.append(list(num_req_pred))
 
-    cur0.execute('select count(1) from saskatchewan_http_emd_10min where imf_index=1 and num_req_pred is null')
+    cur0.execute('select count(1) from saskatchewan_http_emd_30min where imf_index=1 and num_req_pred is null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min where imf_index=%s and num_req_pred is  null '
+    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_30min where imf_index=%s and num_req_pred is  null '
                  ' order by ts limit %s', (int(emd_imf),int(total-len(test_ts))))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]

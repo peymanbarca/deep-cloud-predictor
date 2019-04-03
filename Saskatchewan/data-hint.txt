@@ -4,8 +4,8 @@ Saskatchewan:
             length=17265        8599        5732            --> almost
             EMDs: 20            17          19
 
-LSTM+EMD    ?               ?           ?
-    train_len = 90% mse 30 epoch
+LSTM+EMD    done              done           done
+    train_len = 90%, mse
     (2 layer stacked, seq_len=10, layers=[1,seq_len,20,1],dropout=0.1,recurrent_dropout=0.5)
 
 LSTM+EMD    ?               ?           ?
