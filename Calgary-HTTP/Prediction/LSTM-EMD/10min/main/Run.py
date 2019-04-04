@@ -69,7 +69,7 @@ def write_prediction_to_db(ts_test,y_test,y_pred,imf):
     conn.commit()
 
 if __name__=='__main__':
-    for ii in range(15,23):
+    for ii in range(1,23):
         global_start_time = time.time()
         imf_index = ii
         epochs = 1000 if ii<5 else 200
