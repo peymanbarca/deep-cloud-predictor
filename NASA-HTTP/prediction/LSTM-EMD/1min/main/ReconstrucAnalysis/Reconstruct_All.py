@@ -17,46 +17,88 @@ cur0=conn.cursor()
 
 
 
+def f1(a, N):
+    return np.argsort(a)[::-1][:N]
+
+
+def f2(a, N):
+    return np.argsort(a)[:N]
+
+start_imf=3
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
     # y_true, y_pred = np.array(y_true) + np.min(y_true), np.array(y_pred) + np.min(y_pred)
-    y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+    #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+    z1 = f1(y_true, 1)
+    z2 = f2(y_true, 1)
     ape = []
     for k in range(len(y_true)):
+        #if abs(y_true[k])!=0 and k not in z1 and k not in z2:
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
-            ape.append(abs(     (y_true[k] - y_pred[k]) / y_true[k]          ))
+            ape.append(abs((y_true[k] - y_pred[k]) / y_true[k]))
+    plt.hist(ape, bins='auto', color='orange')
+    plt.xlabel('MAPE')
+    plt.ylabel('frequency')
+    plt.grid()
+    plt.savefig('../results/MAPE_from_imf_' + str(start_imf) + '.png', dpi=600)
+    plt.pause(3)
+    plt.close()
+    ape=sorted(ape)
+    indexes=np.where(ape<np.percentile(ape,90))[0]
+    ape=[ape[k] for k in indexes]
+    #print(ape)
+
     return np.mean(np.array(ape)) * 100
 
 def mean_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     # y_true, y_pred = np.array(y_true) + np.min(y_true), np.array(y_pred) + np.min(y_pred)
     y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+    z1 = f1(y_true, 20)
+    z2 = f2(y_true, 20)
     ape = []
     for k in range(len(y_true)):
+        #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
-            ape.append((     (y_true[k] - y_pred[k]) / y_true[k]          ))
+            ape.append(((y_true[k] - y_pred[k]) / y_true[k]))
+    ape = sorted(ape)
+    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    ape = [ape[k] for k in indexes]
     return np.mean(np.array(ape)) * 100
 
 def median_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     # y_true, y_pred = np.array(y_true) + np.min(y_true), np.array(y_pred) + np.min(y_pred)
-    y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+    #y_true, y_pred = np.abs(y_true) , np.abs(y_pred)
+    z1 = f1(y_true, 20)
+    z2 = f2(y_true, 20)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+        #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
             ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
+    ape = sorted(ape)
+    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    ape = [ape[k] for k in indexes]
     return np.median(np.array(ape)) * 100
 
 def mean_percentage_r_error(y_true, y_pred):
-    # y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
+    #y_true, y_pred = norm_v2_single(y_true), norm_v2_single(y_pred)
     #y_true, y_pred = np.array(y_true) + np.max(y_true), np.array(y_pred) + np.max(y_pred)
-    y_true, y_pred = np.abs(y_true) , np.abs(y_pred)
+    #y_true, y_pred = np.abs(y_true) , np.abs(y_pred)
+    z1 = f1(y_true, 20)
+    z2 = f2(y_true, 20)
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+        #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
             ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
+    ape = sorted(ape)
+    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    ape = [ape[k] for k in indexes]
     return sqrt(np.mean(np.array(ape)))
+
 
 train_ts=[]
 test_ts=[]
@@ -68,7 +110,7 @@ main_test_req_pred=[]
 
 
 
-for i in range(3,21):
+for i in range(start_imf,21):
     print(i,' ...')
     emd_imf=i
 
@@ -121,11 +163,11 @@ RMSRE=mean_percentage_r_error(main_test_req_,main_test_req_pred_)
 
 fig = plt.figure(facecolor='white',figsize=(12, 7))
 ax = fig.add_subplot(211)
-plt.plot(ts_train,main_train_req__,'-',color='red',label='Real Req Train Data')
-plt.plot(test_ts, main_test_req_, '-', color='blue',alpha=0.4,
+plt.plot(ts_train,main_train_req__,color='red',label='Real Req Train Data')
+plt.plot(test_ts, main_test_req_, color='blue',alpha=0.5,
          label='Test Req')
-plt.plot(test_ts,main_test_req_pred_,'-',color='green',
-         label='Prediction Req',alpha=0.9)
+plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
+         label='Prediction Req')
 ax = fig.add_subplot(212)
 plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.4)
 plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.9,
@@ -134,7 +176,7 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('../results/main_reconstruct_from_imf3' + '.png', dpi=600)
-plt.pause(10)
+plt.savefig('../results/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=600)
+plt.pause(7)
 plt.close()
 
