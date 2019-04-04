@@ -1,0 +1,14 @@
+Google task event data
+    contains cpu and ram usages only first 100 part of 500 whole files csv data
+
+    aggregated in every ? chunk:
+
+    CPU:
+                    100             200         1000
+        length:    329592       164796         32959
+
+    RAM:
+                    100             200         1000
+        length:    329592       164796         32959
+
+LSTM-Convnet      done

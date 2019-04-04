@@ -8,47 +8,114 @@ from time import sleep
 
 
 
-def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map):
-    fig = plt.figure(facecolor='white')
+def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map,meap,rmsre,mode):
+    fig = plt.figure(facecolor='white', figsize=(10, 8))
     ax = fig.add_subplot(311)
     ax.plot(ts_train, y_train,color='red', label='Train Data')
-    ax.plot(ts_test,true_data, label='True Test Data')
-    plt.plot(ts_test,predicted_data,color='green', label='Prediction , MSE  = '+str(ms)+ ' , MAPE = '+str(map))
+    ax.plot(ts_test,true_data, label='True Test Data',alpha=0.4)
+    plt.plot(ts_test,predicted_data,color='green',alpha=0.8, label='Prediction , MSE  = '+str(ms)+ ' , MAPE = '+str(map) +\
+               ' \n MEAPE = '+str(meap)+ ' , RMSRE = '+str(rmsre) + ', RMSE='+str(rms))
     plt.legend()
     plt.grid()
     plt.ylim([0,1])
-    plt.ylabel('Normalized CPU Req')
+    if mode==1:
+        plt.ylabel('Normalized CPU Req')
+    elif mode==2:
+        plt.ylabel('Normalized RAM Req')
     ax = fig.add_subplot(312)
     ax.plot(ts_test, true_data, label='True Test Data')
     plt.legend()
     plt.grid()
     plt.ylim([0, 1])
-    plt.ylabel('Normalized CPU Req')
+    if mode==1:
+        plt.ylabel('Normalized CPU Req')
+    elif mode==2:
+        plt.ylabel('Normalized RAM Req')
     ax = fig.add_subplot(313)
     plt.plot(ts_test, predicted_data, color='green', label='Prediction')
     plt.legend()
     plt.grid()
     plt.ylim([0, 1])
     plt.xlabel('Time Symbol')
-    plt.ylabel('Normalized CPU Req')
-    plt.show()
+    if mode==1:
+        plt.ylabel('Normalized CPU Req')
+    elif mode==2:
+        plt.ylabel('Normalized RAM Req')
+    if mode == 1:
+        plt.savefig(
+            '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/Normalized_CPU' + '.png',
+            dpi=700)
+    elif mode == 2:
+        plt.savefig(
+            '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/Normalized_RAM' + '.png',
+            dpi=700)
+
+    plt.pause(3)
+    plt.close()
+
+
+def plot_results_denormalize(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map,meap,rmsre,mode):
+    fig = plt.figure(facecolor='white', figsize=(10, 8))
+    ax = fig.add_subplot(311)
+    ax.plot(ts_train, y_train,color='red', label='Train Data')
+    ax.plot(ts_test,true_data, label='True Test Data',alpha=0.4)
+    plt.plot(ts_test,predicted_data,color='green',alpha=0.8, label='Prediction , MSE  = '+str(ms)+ ' , MAPE = '+str(map) +\
+               ' \n MEAPE = '+str(meap)+ ' , RMSRE = '+str(rmsre) + ', RMSE='+str(rms))
+    plt.legend()
+    plt.grid()
+    #plt.ylim([0,1])
+    if mode==1:
+        plt.ylabel(' CPU Req')
+    elif mode==2:
+        plt.ylabel(' RAM Req')
+    ax = fig.add_subplot(312)
+    ax.plot(ts_test, true_data, label='True Test Data')
+    plt.legend()
+    plt.grid()
+    #plt.ylim([0, 1])
+    if mode==1:
+        plt.ylabel(' CPU Req')
+    elif mode==2:
+        plt.ylabel(' RAM Req')
+    ax = fig.add_subplot(313)
+    plt.plot(ts_test, predicted_data, color='green', label='Prediction')
+    plt.legend()
+    plt.grid()
+    #plt.ylim([0, 1])
+    plt.xlabel('Time Symbol')
+    if mode==1:
+        plt.ylabel(' CPU Req')
+    elif mode==2:
+        plt.ylabel(' RAM Req')
+    if mode == 1:
+        plt.savefig(
+            '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/Main_CPU' + '.png',
+            dpi=700)
+    elif mode == 2:
+        plt.savefig(
+            '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/Main_RAM' + '.png',
+            dpi=700)
+
+    plt.pause(3)
+    plt.close()
 
 
 
 if __name__=='__main__':
     global_start_time = time.time()
-    epochs = 50
+    epochs = 100
     seq_len =25
     factor=0.8
     mode=1 ## 1 for CPU, 2 for RAM
 
-    X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test = Train_LSTM.load_data(seq_len,mode,factor,first_plot=True)
+    X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test,min_max_scaler = \
+        Train_LSTM.load_data(seq_len,mode,factor,first_plot=True)
 
 
 
-    model = Train_LSTM.build_model([1,25, 50, 1])
-    from keras.utils.vis_utils import plot_model
-    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+    model = Train_LSTM.build_model([1,seq_len, 50, 1])
+    #from keras.utils.vis_utils import plot_model
+    #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)
@@ -58,11 +125,11 @@ if __name__=='__main__':
     history=model.fit(
         X_train,
         y_train,
-        batch_size=512,
+        batch_size=256,
         nb_epoch=epochs,
-        validation_split=0.2)
+        validation_split=0.1)
 
-    print('total training time with 50 epochs is ',time.time()-st1)
+    print('total training time  is ',time.time()-st1)
 
     import matplotlib.pyplot as plt
 
@@ -74,16 +141,30 @@ if __name__=='__main__':
     plt.plot(epochs, val_loss, 'b', color='red', label='Validation loss')
     plt.title('Training and validation loss')
     plt.legend()
-    plt.show()
+    if mode == 1:
+        plt.savefig(
+            '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/Normalized_CPU_Train_Loss' + '.png',
+            dpi=700)
+    elif mode == 2:
+        plt.savefig(
+            '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/Normalized_RAM_Train_Loss' + '.png',
+            dpi=700)
+    plt.pause(3)
+    plt.close()
 
 
     ''' saving the trained model'''
-    model.save('model-CPU.h5')  # creates a HDF5 file 'my_model.h5'
+    if mode==1:
+        model.save('model-CPU.h5')  # creates a HDF5 file
+    elif mode == 2:
+        model.save('model-RAM.h5')  # creates a HDF5 file
 
 
     predicted = Train_LSTM.predict_point_by_point(model, X_test)
+    y_test = np.reshape(y_test, (y_test.size,))
     print(len(predicted),len(y_test),'------------')
-    del X_train,X_test,y_train
+
+    del X_train,X_test
     print('-----\n--------------\n--------------------------')
     sleep(3)
 
@@ -100,33 +181,106 @@ if __name__=='__main__':
     print(' ------------------------------------')
 
 
-    def mean_absolute_percentage_error(y_true, y_pred):
-        ape=[]
+    def mean_absolute_percentage_error(y_true, y_pred,mode):
+
+        ape = []
         for k in range(len(y_true)):
-            if (y_true[k] > 1e-2):
-                ape.append(np.abs((y_true[k] - y_pred[k]) / (y_true[k])))
+            # if abs(y_true[k])!=0 and k not in z1 and k not in z2:
+            if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+                ape.append(abs((y_true[k] - y_pred[k]) / y_true[k]))
+        plt.hist(ape, bins='auto',color='orange')
+        plt.xlabel('MAPE')
+        plt.ylabel('frequency')
+        plt.grid()
+        if mode == 1:
+            plt.savefig(
+                '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results'
+                '/MAPE_CPU' + '.png', dpi=600)
+        elif mode == 2:
+            plt.savefig(
+                '/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results'
+                '/MAPE_RAM' + '.png', dpi=600)
+
+        plt.pause(3)
+        plt.close()
+        ape = sorted(ape)
+        indexes = np.where(ape < np.percentile(ape, 90))[0]
+        ape = [ape[k] for k in indexes]
+        # print(ape)
 
         return np.mean(np.array(ape)) * 100
 
 
+
     def median_absolute_percentage_error(y_true, y_pred):
-        ape=[]
 
+        ape = []
         for k in range(len(y_true)):
-            if (y_true[k]>1e-2):
-                ape.append(np.abs((y_true[k] - y_pred[k]) / (y_true[k])))
-
+            if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+                # if abs(y_true[k])!=0  and k not in z1 and k not in z2:
+                ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
+        ape = sorted(ape)
+        indexes = np.where(ape < np.percentile(ape, 90))[0]
+        ape = [ape[k] for k in indexes]
         return np.median(np.array(ape)) * 100
 
-    map=mean_absolute_percentage_error(y_test, predicted)
+
+    def mean_percentage_r_error(y_true, y_pred):
+
+        ape = []
+        for k in range(len(y_true)):
+            if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+                # if abs(y_true[k])!=0  and k not in z1 and k not in z2:
+                ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
+        ape = sorted(ape)
+        indexes = np.where(ape < np.percentile(ape, 90))[0]
+        ape = [ape[k] for k in indexes]
+        return sqrt(np.mean(np.array(ape)))
+
+    map=mean_absolute_percentage_error(y_test, predicted,mode)
     print('MAPE is ', map)
     meap = median_absolute_percentage_error(y_test, predicted)
     print('MEAPE is ', meap)
+    rmsre = mean_percentage_r_error(y_test, predicted)
+    print('MPRE is ', rmsre)
+
+    plot_results(predicted, ts_test, y_test, ts_train, y_train_original_part, rms, ms, map,meap,rmsre,mode)
 
     ''' todo : denoramalize the actual and predicted data '''
+    print('Denormalizeing Data ....')
+
+    from denorm import denorm_v2
+
+    y_test_revert = denorm_v2(y_test,min_max_scaler)
+    print('-----------------------', len(y_test), len(y_test_revert))
+    y_train_revert = denorm_v2(y_train,min_max_scaler)
+    print('-----------------------', len(y_train), len(y_train_revert))
+    y_train_original_revert = denorm_v2(y_train_original_part,min_max_scaler)
+    print('-----------------------', len(y_train_original_part), len(y_train_original_revert))
+    y_pred_revert = denorm_v2(predicted,min_max_scaler)
+    print('-----------------------', len(predicted), len(y_pred_revert))
+
+    y_test_revert = np.reshape(y_test_revert, (y_test_revert.size,))
+    y_pred_revert = np.reshape(y_pred_revert, (y_pred_revert.size,))
+
+    rms = sqrt(mean_squared_error(y_test_revert, y_pred_revert))
+    ms = mean_squared_error(y_test_revert, y_pred_revert)
+    print('RMSE is ', rms)
+    print('MSE is ', ms)
+    print(' ------------------------------------')
+
+    map=mean_absolute_percentage_error(y_test_revert, y_pred_revert,mode)
+    print('MAPE is ', map)
+    meap = median_absolute_percentage_error(y_test_revert, y_pred_revert)
+    print('MEAPE is ', meap)
+    rmsre = mean_percentage_r_error(y_test_revert, y_pred_revert)
+    print('RMSRE is ', rmsre)
+
+    plot_results_denormalize(y_pred_revert, ts_test,y_test_revert, ts_train, y_train_original_revert,
+                             rms, ms, map, meap, rmsre, mode)
 
 
-    plot_results(predicted,ts_test, y_test,ts_train,y_train_original_part,rms,ms,map)
+
 
 
 

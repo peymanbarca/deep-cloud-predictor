@@ -8,7 +8,7 @@ from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM,GRU
 from keras.models import Sequential
 from keras import regularizers
-from keras.layers import Conv1D,MaxPooling1D,GlobalMaxPooling1D
+from keras.layers import Conv1D,MaxPooling1D,GlobalMaxPooling1D,Bidirectional
 from keras.models import Sequential
 from keras.optimizers import RMSprop
 
@@ -28,15 +28,15 @@ def build_model(layers):
 
 
 
-    model.add(LSTM(
+    model.add(Bidirectional(LSTM(
         input_shape=(layers[1], layers[0]),
         output_dim=layers[1],
-        return_sequences=True,recurrent_dropout=0.5,dropout=0.1))
+        return_sequences=True,recurrent_dropout=0.5,dropout=0.1)))
     #model.add(Dropout(0.2))
 
-    model.add(GRU(
+    model.add(Bidirectional(LSTM(
         layers[2],
-        return_sequences=False,recurrent_dropout=0.5,dropout=0.1))
+        return_sequences=False,recurrent_dropout=0.5,dropout=0.1)))
 
 
     # model.add(GRU(
@@ -63,7 +63,7 @@ def build_model(layers):
 def load_data(seq_len,mode,factor,first_plot=False):
     std_cpu, std_ram, mean_cpu, mean_ram, ts, \
     cpu_values_normalize, \
-    ram_values_normalize\
+    ram_values_normalize,min_max_scaler\
         =normalizer.normalizer(plot=first_plot)
 
 
@@ -121,7 +121,7 @@ def load_data(seq_len,mode,factor,first_plot=False):
     x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1)) # make 3D
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
-    return [x_train, y_train,y_train_original_part, x_test, y_test,ts_train,ts_test]
+    return [x_train, y_train,y_train_original_part, x_test, y_test,ts_train,ts_test,min_max_scaler]
 
 
 
