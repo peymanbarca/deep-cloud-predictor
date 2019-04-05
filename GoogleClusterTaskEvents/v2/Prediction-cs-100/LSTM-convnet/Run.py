@@ -106,7 +106,7 @@ if __name__=='__main__':
     epochs = 100
     seq_len =25
     factor=0.8
-    mode=1 ## 1 for CPU, 2 for RAM
+    mode=2 ## 1 for CPU, 2 for RAM
 
     X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test,min_max_scaler = \
         Train_LSTM.load_data(seq_len,mode,factor,first_plot=True)
@@ -125,7 +125,7 @@ if __name__=='__main__':
     history=model.fit(
         X_train,
         y_train,
-        batch_size=256,
+        batch_size=512,
         nb_epoch=epochs,
         validation_split=0.1)
 

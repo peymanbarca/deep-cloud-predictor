@@ -7,6 +7,7 @@ import numpy as np
 from time import sleep
 
 
+
 def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map):
     fig = plt.figure(facecolor='white',figsize=(13.0, 8.0))
     ax = fig.add_subplot(211)
@@ -53,7 +54,7 @@ if __name__=='__main__':
     from keras.models import load_model
 
     if mode==1:
-        model = load_model('model.h5')
+        model = load_model('model-CPU.h5')
     elif mode==2:
         model = load_model('model-RAM.h5')
 

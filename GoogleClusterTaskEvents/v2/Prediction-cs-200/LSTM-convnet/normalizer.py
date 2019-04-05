@@ -17,19 +17,29 @@ def normalizer(plot=False):
     #cpu_values_normalize = (np.array(cpu_values) - mean_cpu) / std_cpu
     #ram_values_normalize = (np.array(ram_values) - mean_ram) / std_ram
 
-    cpu_max=np.max(cpu_values)
-    cpu_min=np.min(cpu_values)
-    ram_max=np.max(ram_values)
-    ram_min=np.min(ram_values)
-    print(cpu_max, cpu_min)
-    print(ram_max, ram_min)
-    print('----------------------')
-    #
-    cpu_values_normalize = cpu_values / (cpu_max - cpu_min)
-    ram_values_normalize = ram_values / (ram_max - ram_min)
+    # cpu_max=np.max(cpu_values)
+    # cpu_min=np.min(cpu_values)
+    # ram_max=np.max(ram_values)
+    # ram_min=np.min(ram_values)
+    # print(cpu_max, cpu_min)
+    # print(ram_max, ram_min)
+    # print('----------------------')
+    # #
+    # cpu_values_normalize = cpu_values / (cpu_max - cpu_min)
+    # ram_values_normalize = ram_values / (ram_max - ram_min)
+
+
+
+
+
+    from sklearn import preprocessing
+
+    min_max_scaler = preprocessing.MinMaxScaler()
+    cpu_values_normalize = min_max_scaler.fit_transform(cpu_values.reshape(-1,1))
+    ram_values_normalize = min_max_scaler.fit_transform(ram_values.reshape(-1, 1))
 
     from knn import perform_knn
-    cpu_values_normalize=perform_knn(cpu_values_normalize)
+    cpu_values_normalize = perform_knn(cpu_values_normalize)
     ram_values_normalize = perform_knn(ram_values_normalize)
 
     cpu_max = np.max(cpu_values_normalize)
@@ -39,12 +49,6 @@ def normalizer(plot=False):
     print(cpu_max, cpu_min)
     print(ram_max, ram_min)
     print('----------------------')
-
-    from sklearn import preprocessing
-
-    # min_max_scaler = preprocessing.MinMaxScaler()
-    # cpu_values_normalize = min_max_scaler.fit_transform(cpu_values_normalize.reshape(-1,1))
-    # ram_values_normalize = min_max_scaler.fit_transform(cpu_values_normalize.reshape(-1, 1))
 
 
 
@@ -70,7 +74,7 @@ def normalizer(plot=False):
         plt.close()
 
     return std_cpu,std_ram,mean_cpu,mean_ram,ts, \
-           cpu_values_normalize,ram_values_normalize
+           cpu_values_normalize,ram_values_normalize,min_max_scaler
 
 
 

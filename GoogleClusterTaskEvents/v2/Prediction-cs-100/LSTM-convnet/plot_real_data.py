@@ -4,7 +4,7 @@ import normalizer
 
 std_cpu, std_ram, mean_cpu, mean_ram, ts, \
     cpu_values_normalize, \
-    ram_values_normalize\
+    ram_values_normalize,min_max_scaler\
         =normalizer.normalizer(plot=False)
 
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ plt.ylim([0,1])
 plt.ylabel('Normalized RAM Request')
 plt.xlabel('Time Symbol')
 #
-plt.savefig('REAL_100.png', format='png', dpi=800)
+plt.savefig('/home/vacek/Cloud/cloud-predictor/GoogleClusterTaskEvents/v2/Prediction-cs-100/LSTM-convnet/results/REAL_100.png', format='png', dpi=800)
 plt.show()
 
 
