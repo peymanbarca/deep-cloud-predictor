@@ -99,9 +99,7 @@ for imf_index in range(1,21):
         plt.xlabel('MAPE')
         plt.ylabel('frequency')
         plt.grid()
-        plt.savefig(
-            '/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-Convnet/1min/results'
-            '/MAPE' + '.png', dpi=600)
+
 
         plt.pause(3)
         plt.close()
@@ -198,7 +196,7 @@ for imf_index in range(1,21):
     plt.close()
 
     def write_prediction_to_db(ts_test,y_pred,imf):
-
+        print(len(ts_test))
         for k in range(len(ts_test)):
             cur.execute('update nasa_http_emd_1min set num_req_pred_svr=%s where imf_index=%s'
                         ' and num_req_pred is null and ts=%s', \
