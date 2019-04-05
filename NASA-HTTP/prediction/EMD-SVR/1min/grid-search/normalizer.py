@@ -1,7 +1,6 @@
 import numpy as np
 from Read_Data import read_data
 from matplotlib import pyplot as plt
-from knn import perform_knn
 from norm import norm_v1,norm_v2
 
 def normalizer(imf_index,ver=2,plot=False):
