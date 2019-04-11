@@ -89,10 +89,10 @@ for kkk in range(len(sample_time)):
         conn.commit()
 
 
-print('****** Start to 20min Analysis ...')
+print('****** Start to 60min Analysis ...')
 emd = EMD()
 IMFs = emd(np.array(num_reqs,dtype=float))
-print('****** 20min Analysis Completed! ')
+print('****** 60min Analysis Completed! ')
 num_of_IMF=len(IMFs)
 print('total number of IMFs are',num_of_IMF)
 imf_lens=[]

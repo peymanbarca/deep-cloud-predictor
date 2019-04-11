@@ -12,7 +12,7 @@ def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,ms):
     ax = fig.add_subplot(311)
     ax.plot(ts_train, y_train,color='red', label='Train Data')
     ax.plot(ts_test,true_data, label='True Test Data')
-    plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=20min , MSE  = '+str(ms))
+    plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=60min , MSE  = '+str(ms))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(312)

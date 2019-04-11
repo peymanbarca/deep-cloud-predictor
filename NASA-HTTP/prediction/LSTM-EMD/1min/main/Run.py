@@ -24,7 +24,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     # ax = fig.add_subplot(211)
     # ax.plot(ts_train, y_train,color='red', label='Train Data')
     # ax.plot(ts_test,true_data, label='True Test Data')
-    # plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=20min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
+    # plt.plot(ts_test,predicted_data,color='green', label='Prediction-PWS=60min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
     # plt.legend()
     # plt.grid()
     # ax = fig.add_subplot(212)
