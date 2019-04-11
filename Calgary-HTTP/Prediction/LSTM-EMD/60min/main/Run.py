@@ -72,7 +72,7 @@ if __name__=='__main__':
     for ii in range(1,18):
         global_start_time = time.time()
         imf_index = ii
-        epochs = 1000 if ii<5 else 200
+        epochs = 500 if ii<5 else 200
         seq_len = 10
 
         norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
@@ -117,21 +117,21 @@ if __name__=='__main__':
         print(len(predicted),'------------')
 
         # note that we can predict point by point each step using last true data!!!
-        predicted2 = []
-        for ii in range((X_test.shape[0])):
-            if ii > 1:
-                tmp = X_test[ii, :, :]
-                tmp[-1, :] = y_test[ii - 1]
-                input_seq = np.reshape(tmp,
-                                       (1, tmp.shape[0], tmp.shape[1]))
-            else:
-                input_seq = np.reshape(X_test[ii, :, :],
-                                       (1, X_test[ii, :, :].shape[0], X_test[ii, :, :].shape[1]))
-            # print(input_seq.shape)
-            y = Train_LSTM.predict_point_by_point(model, input_seq)
-            predicted2.append(y)
-        print(len(predicted2), '------------')
-        predicted = np.array(predicted2)
+        # predicted2 = []
+        # for ii in range((X_test.shape[0])):
+        #     if ii > 1:
+        #         tmp = X_test[ii, :, :]
+        #         tmp[-1, :] = y_test[ii - 1]
+        #         input_seq = np.reshape(tmp,
+        #                                (1, tmp.shape[0], tmp.shape[1]))
+        #     else:
+        #         input_seq = np.reshape(X_test[ii, :, :],
+        #                                (1, X_test[ii, :, :].shape[0], X_test[ii, :, :].shape[1]))
+        #     # print(input_seq.shape)
+        #     y = Train_LSTM.predict_point_by_point(model, input_seq)
+        #     predicted2.append(y)
+        # print(len(predicted2), '------------')
+        # predicted = np.array(predicted2)
 
         print('Training duration (s) : ', time.time() - global_start_time)
         # plot_results_multiple(predictions, y_test, 50)

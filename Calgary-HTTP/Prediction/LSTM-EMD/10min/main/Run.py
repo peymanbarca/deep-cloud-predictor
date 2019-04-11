@@ -72,7 +72,7 @@ if __name__=='__main__':
     for ii in range(1,23):
         global_start_time = time.time()
         imf_index = ii
-        epochs = 1000 if ii<5 else 200
+        epochs = 500 if ii<5 else 200
         seq_len = 10
 
         norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
@@ -95,7 +95,7 @@ if __name__=='__main__':
         history =model.fit(
             X_train,
             y_train,
-            batch_size=512,
+            batch_size=2048,
             nb_epoch=epochs,
             validation_split=0.1)
 

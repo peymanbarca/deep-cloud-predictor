@@ -47,7 +47,7 @@ def build_model(layers):
     model.add(Activation("linear"))
 
     start = time.time()
-    model.compile(loss="mae", optimizer=RMSprop()) # mae or mse??
+    model.compile(loss="mse", optimizer=RMSprop()) # mae or mse??
     print("> Compilation Time : ", time.time() - start)
     return model
 

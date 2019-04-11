@@ -24,7 +24,7 @@ def f1(a, N):
 def f2(a, N):
     return np.argsort(a)[:N]
 
-start_imf=5
+start_imf=4
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = norm_v2_single(y_true),norm_v2_single(y_pred)
