@@ -18,10 +18,10 @@ cur=conn.cursor()
 
 
 norm_Ver=1 # 1 = maxAbsSclaer (-1,1) 2=minMaxSclaer (0,1)
-seq_lag=20
+seq_lag=10
 train_factor=0.9
 
-for imf_index in range(1,18):
+for imf_index in range(1,20):
     print(imf_index,'****************************************')
 
     ts,num_req_normalize,MaxAbsScalerObj=normalizer(imf_index,norm_Ver,False)
@@ -157,7 +157,7 @@ for imf_index in range(1,18):
     plt.subplot(3,1,3)
     plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f%% ,  RMSE=%.4f  ,\n  MEAPE=%.4f%% , RMSRE=%.4f '% (map,rms,meap,rmsre))
     plt.legend()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/EMD-SVR/20min/main/results'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/EMD-SVR/30min/main/results'
                 '/imf' + str(imf_index) + '/normalize' + '.png', dpi=900)
     plt.pause(5)
     plt.close()
@@ -199,7 +199,7 @@ for imf_index in range(1,18):
     plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f%% ,\n '
                                        ' RMSE=%.4f  , RMSRE=%.4f  '% (map_denormalize,rms_denormalize,rmsre_denorm))
     plt.legend()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/EMD-SVR/20min/main/results'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/EMD-SVR/30min/main/results'
                 '/imf' + str(imf_index) + '/original' + '.png', dpi=900)
     plt.pause(5)
     plt.close()
@@ -207,7 +207,7 @@ for imf_index in range(1,18):
     def write_prediction_to_db(ts_test,y_pred,imf):
 
         for k in range(len(ts_test)):
-            cur.execute('update saskatchewan_http_emd_20min set num_req_pred_svr=%s where imf_index=%s'
+            cur.execute('update saskatchewan_http_emd_30min set num_req_pred_svr=%s where imf_index=%s'
                         ' and num_req_pred is null and ts=%s', \
                         ( y_pred[k],int(imf),ts_test[k]))
             conn.commit()
