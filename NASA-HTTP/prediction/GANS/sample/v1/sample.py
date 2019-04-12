@@ -19,7 +19,7 @@ class GAN():
         self.img_rows = 28
         self.img_cols = 28
         self.channels = 1
-        self.img_shape = (self.img_rows, self.img_cols, self.channels)
+        self.img_shape = (self.img_rows, self.img_cols, self.channels) # output of G and input to D
         self.latent_dim = 100
 
         optimizer = Adam(0.0002, 0.5)
@@ -128,7 +128,7 @@ class GAN():
 
             noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
 
-            # Train the generator (to have the discriminator label samples as valid)
+            # Train the generator (to have the discriminator label samples as valid) (say a lie to discrimantor from generator!!!)
             g_loss = self.combined.train_on_batch(noise, valid)
 
             # Plot the progress

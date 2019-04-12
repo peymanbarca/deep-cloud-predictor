@@ -14,7 +14,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' #Hide messy TensorFlow warnings
 warnings.filterwarnings("ignore") #Hide messy Numpy warnings
 
 
-def build_model(layers):
+def build_rnn_model(layers):
     model = Sequential()
 
     # model.add(Conv1D(32, 5, activation='relu',
@@ -53,7 +53,7 @@ def build_model(layers):
 
 def load_data(seq_len,imf_index,ver):
     ts, num_req_normalize,MaxAbsScalerObj\
-        =normalizer.normalizer(imf_index,ver,plot=True)
+        =normalizer.normalizer(imf_index,ver,plot=False)
 
 
     sequence_length = seq_len + 1
