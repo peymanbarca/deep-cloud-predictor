@@ -1,0 +1,27 @@
+EPA:
+
+            PWs=5sec       10sec
+            length= 10069    5939              --> EPA HTTP logs is 2 days 29 & 30 Aguest
+            EMDs: 12        14
+
+LSTM+EMD    ?               ?
+    train_len = 90% los==mse (1 step ahead)
+    (2 layer stacked, seq_len=10, layers=[1,seq_len,20,1],dropout=0.1,recurrent_dropout=0.5)
+
+LSTM+EMD    ?               ?           ('only on main imfs')
+    grid-search train_len = 90%
+    (2 layer stacked, seq_len=5,10,15,20 layers=[1,seq_len,[5,10,20,40],1],dropout=0.1,recurrent_dropout=0.5)
+
+SVR+EMD     ?               ?
+ train_len = 90% (1 step ahead)
+ (seq_len=20, without c epsilon gamma  & rbf kernel, fitted on train seq data predict on test data)
+ in case of creating train & test sequenses look at prints in run main code ...
+
+
+SVR+EMD      ?
+ train_len = 90%
+ (seq_len=20 and grid-search fitted on train seq data predict on test data *)
+
+CNN+LSTM       ?            ?
+    train_len = 90% loss=mse
+    (2 layer stacked, seq_len=10, layers=[1,seq_len,20,1],dropout=0.1,recurrent_dropout=0.5)

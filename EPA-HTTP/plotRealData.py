@@ -11,7 +11,7 @@ from datetime import datetime
 ''' EPA HTTP logs is 2 days 29 & 30 Aguest '''
 
 
-data = np.array(pd.read_csv('E:/ThesisNew/Thesis/Data/epa-http.txt/epa-http.csv',sep ='['))
+data = np.array(pd.read_csv('/home/vacek/Cloud/ThesisNew/Thesis/Data/epa-http.txt/epa-http.csv',sep ='['))
 domains=data[:,1]
 timestamps=[]
 ids=[]
@@ -29,8 +29,8 @@ print('total length of data is ',len(timestamps),len(ids))
 del data
 
 print('**************')
-''' Set PWS = 10 sec '''
-pws=10
+''' Set PWS = 5 sec '''
+pws=5
 unique_ids_total=[]
 unique_ids=[]
 unique_ts=[]
@@ -75,7 +75,7 @@ fig = plt.figure(facecolor='white',figsize=(10, 8))
 plt.hist(num_reqs,bins='auto')
 plt.xlabel('Number of Requests')
 plt.ylabel('frequency')
-plt.savefig('figs/10sec/' + 'histogram.png', dpi=600)
+#plt.savefig('figs/10sec/' + 'histogram.png', dpi=600)
 plt.pause(3)
 plt.close()
 fig = plt.figure(facecolor='white',figsize=(10, 8))
@@ -84,7 +84,7 @@ plt.xlabel('time')
 plt.legend()
 plt.grid()
 plt.ylabel('Number of Requests')
-plt.savefig('figs/10sec/' + 'original.png', dpi=600)
+#plt.savefig('figs/10sec/' + 'original.png', dpi=600)
 plt.pause(3)
 plt.close()
 #
@@ -98,14 +98,14 @@ database = 'load_cloud'
 
 conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
 cur0 = conn.cursor()
-cur0.execute('delete from epa_http_10sec')
-cur0.execute('delete from epa_http_emd_10sec')
+cur0.execute('delete from epa_http_5sec')
+cur0.execute('delete from epa_http_emd_5sec')
 conn.commit()
 
 print('writing raw data to DB ...')
 cur1=conn.cursor()
 for kkk in range(len(sample_time)):
-        cur1.execute('insert into epa_http_10sec values (%s,%s,%s)',(int(kkk+1),int(num_reqs[kkk]),sample_time[kkk]))
+        cur1.execute('insert into epa_http_5sec values (%s,%s,%s)',(int(kkk+1),int(num_reqs[kkk]),sample_time[kkk]))
         conn.commit()
 #
 print('****** Start to EDM Analysis ')
@@ -121,7 +121,7 @@ for imf_index in range(len(IMFs)):
     imf_lens.append(len(IMFs[imf_index]))
     for kkk in range(len(num_reqs)):
             cur2 = conn.cursor()
-            cur2.execute('insert into epa_http_emd_10sec values (%s,%s,%s,%s)',
+            cur2.execute('insert into epa_http_emd_5sec values (%s,%s,%s,%s)',
                          (int(kkk + 1), int(IMFs[imf_index][kkk]), sample_time[kkk],int(imf_index+1)))
             conn.commit()
     print('IMF ' + str(imf_index + 1) + ' written to DB !!! ')
@@ -129,7 +129,7 @@ for imf_index in range(len(IMFs)):
     plt.plot(IMFs[imf_index])
     plt.title('imf # ' + str(imf_index + 1))
     plt.grid()
-    plt.savefig('figs/10sec/'+ 'IMF_' + str(imf_index + 1) + '.png', dpi=600)
+    #plt.savefig('figs/10sec/'+ 'IMF_' + str(imf_index + 1) + '.png', dpi=600)
     plt.pause(3)
     plt.close()
 
