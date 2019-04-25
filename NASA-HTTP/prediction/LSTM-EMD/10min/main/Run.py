@@ -43,7 +43,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax.plot(ts_train, y_train_revert, color='red', label='Train Data')
     ax.plot(ts_test, y_test_revert, label='True Test Data')
     plt.plot(ts_test, y_predicted_revert, color='green',
-             label='Prediction-PWS=10min , RMSE  = ' + str(rms_denormalize))
+             label='Prediction-PWS=5sec , RMSE  = ' + str(rms_denormalize))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
@@ -51,7 +51,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     plt.plot(ts_test, y_predicted_revert, color='blue', label='Prediction',alpha=0.9)
     plt.legend()
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-EMD/10min/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-EMD/5sec/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 
@@ -108,7 +108,7 @@ if __name__=='__main__':
         plt.plot(epochs, val_loss, 'b', color='red', label='Validation loss')
         plt.title('Training and validation loss')
         plt.legend()
-        plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-EMD/10min/main/results/imf' + str(
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/LSTM-EMD/5sec/main/results/imf' + str(
             imf_index) + '/loss_hist' + '.png', dpi=600)
         plt.pause(3)
         plt.close()

@@ -25,7 +25,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     # ax.plot(ts_train, y_train,color='red', label='Train Data')
     # ax.plot(ts_test,true_data, label='True Test Data')
     # plt.plot(ts_test,predicted_data,'-.',color='green',
-    #          label='Prediction-PWS=10min IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
+    #          label='Prediction-PWS=5sec IMF= ' + str(imf) +' , MSE  = '+str(ms) + ' MAPE = ' +str(map))
     # plt.legend()
     # plt.grid()
     # ax = fig.add_subplot(212)
@@ -44,7 +44,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax.plot(ts_train, y_train_revert, color='red', label='Train Data')
     ax.plot(ts_test, y_test_revert, label='True Test Data')
     plt.plot(ts_test, y_predicted_revert, color='green',
-             label='Prediction-PWS=10min , RMSE  = ' + str(rms_denormalize))
+             label='Prediction-PWS=5sec , RMSE  = ' + str(rms_denormalize))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
@@ -52,7 +52,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     plt.plot(ts_test, y_predicted_revert, color='brown', label='Prediction',alpha=0.9)
     plt.legend()
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/LSTM-EMD/10min/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/LSTM-EMD/5sec/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 

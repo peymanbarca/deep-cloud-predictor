@@ -17,23 +17,21 @@ import sys
 
 import numpy as np
 import Train_LSTM
+from denorm import denorm_v2
+import time
+import psycopg2
+
+
+hostname = 'localhost'
+username = 'postgres'
+password = 'inter2010'
+database = 'load_cloud'
+
+conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
+cur=conn.cursor()
 
 
 
-
-
-seq_len = 30
-imf_index=8
-norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
-
-X_train, y_train,y_train_original_part, X_test, y_test,ts_train,ts_test,MaxAbsScalerObj =\
-        Train_LSTM.load_data(seq_len,imf_index,norm_version)
-
-
-print(' --------------\n Shape of data is : \n ')
-print('X_train: ',X_train.shape, ' Y_train: ',y_train.shape)
-print('X_test: ',X_test.shape, ' Y_test: ',y_test.shape)
-print('----------------\n')
 
 
 
@@ -159,7 +157,7 @@ class GAN():
         # The generator takes x_train & y_train as input and generates two vectors
         # iterate one point by point based on a length ( T )
         print('*******************************************************************')
-        print('***************** Running *********************')
+        print('         ***************** Running *********************')
 
         d_loss_reals=[]
         d_loss_fakes=[]
@@ -168,6 +166,7 @@ class GAN():
         g_loss_predictions=[]
 
         for epoch in range(epochs):
+            t1=time.time()
             print('<<<---------------------------------------------------------------------------','epoch ',
                   epoch,'------------------------------------>>>')
             l=len(X_train)//batchsize
@@ -186,27 +185,28 @@ class GAN():
 
                 X = X_train[i*batchsize:(i+1)*batchsize]
                 Y = X
-                y_true = y_train[i*batchsize+1:(i+1)*batchsize+1]  # y_T+1
+                y_true = y_train[i*batchsize:(i+1)*batchsize]  # y_T+1
                 y_true=np.expand_dims(y_true,3)
                 g_in = X
-                print(X.shape,Y.shape,y_true.shape) if verbose==True else None
+                print('shape of X is ',X.shape,'shape of Y is ',Y.shape,
+                      'shape of y_true is ',y_true.shape) if i==0 else None #if verbose==True else None
                 g_out = self.generator.predict([g_in,Y])  # which is y_hat_T+1
 
 
 
                 y_hat_vector = g_out
                 y_vector = np.concatenate((Y, y_true),axis=1)
-                #y_vector=np.expand_dims(np.reshape(y_vector,(1,y_vector.shape[0],)),3)
 
-                print('size of output of Generator:\n') if i==0 else None
+
+                print('\n size of output of Generator:\n') if i==0 else None
                 print('y_hat: ',y_hat_vector.shape,'=',g_out.shape,'y_bar: ',y_vector.shape) \
                     if i == 0  else None
 
                 #d_in = y_hat_vector  # shape = (1,T+1,1)
 
                 # Adversarial ground truths
-                valid = np.ones((batchsize, self.valid_vector_shape,2))
-                fake = np.zeros((batchsize, self.valid_vector_shape,2))
+                valid = np.ones(shape=(batchsize, self.valid_vector_shape,2))
+                fake = np.zeros(shape=(batchsize, self.valid_vector_shape,2))
 
 
 
@@ -216,7 +216,7 @@ class GAN():
                 d_loss_fake = self.discriminator.train_on_batch(y_hat_vector, fake)
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
 
-                d_loss_reals_tmp.append(d_loss[0])
+                d_loss_reals_tmp.append(d_loss_real[0])
                 d_loss_fakes_tmp.append(d_loss_fake[0])
                 d_losses_tmp.append(d_loss[0])
 
@@ -230,7 +230,7 @@ class GAN():
 
                 X = X_train[i * batchsize:(i + 1) * batchsize]
                 Y = X
-                y_true = y_train[i * batchsize + 1:(i + 1) * batchsize + 1]  # y_T+1
+                y_true = y_train[i * batchsize :(i + 1) * batchsize ]  # y_T+1
                 y_true = np.expand_dims(y_true, 3)
                 g_in = X
                 y_vector = np.concatenate((Y, y_true), axis=1)
@@ -244,9 +244,11 @@ class GAN():
 
                 # Plot the progress
                 #if i%sample_interval==1:
-                print(i,'..............')
-                print ("%d from %d batches, [D loss: %f, acc.: %.2f%%] [G loss: %f] [G loss prediction: %f]" %
+                print('       imf ',imf_index,', epoch ',epoch,' , batch ',i,'..............')
+                print ("    %d from %d batches, [D loss: %f, acc.: %.2f%%] [G loss: %f] [G loss prediction: %f]" %
                        (i,l, d_loss[0], 100*d_loss[1], g_loss,g_loss_prediction))
+            t2=time.time()
+            print('\t took : ',t2-t1)
 
             d_loss_reals.append(np.mean(d_loss_reals_tmp))
             d_loss_fakes.append(np.mean(d_loss_fakes_tmp))
@@ -276,11 +278,164 @@ class GAN():
         plt.legend()
         plt.grid()
         plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS/5min/resutls'
-                    '/imf' + str(imf_index) + '_losses' + '.png', dpi=700)
+                    '/imf' + str(imf_index) + '/losses' + '.png', dpi=700)
+        plt.pause(4)
+        plt.close()
 
+    def test(self):
+        ytr=[]
+        ypr=[]
+        print('\n\t\t ------------------- Test staging ---------------------')
+        for i in range(len(X_test)):
+            X = X_test[i]
+            X = np.expand_dims(X,3)
+            X = np.reshape(X, newshape= (1,X.size,1))
+            Y = X
+            y_true = y_test[i]  # y_T+1
+            y_true = np.expand_dims(y_true, 3)
+            g_in = X
+            print('\tshape of X is ', X.shape, 'shape of Y is ', Y.shape,
+                  'shape of y_true is ', y_true.shape) if i==0 else None
+            g_out = self.generator.predict([g_in, Y])  # which is y_hat_T+1
+            print('\tshape of g_out is ',g_out.shape) if i==0 else None
+            g_out=np.squeeze(g_out)
+            y_pred=g_out[-1]
+            ytr.append(y_true[0][0])
+            ypr.append(y_pred)
+
+
+
+        from sklearn.metrics import mean_squared_error
+        from math import sqrt
+        ms = mean_squared_error(ytr, ypr)
+        rms = sqrt(ms)
+        print('MSE is ', ms)
+        print(' ------------------------------------')
+
+        def mean_absolute_percentage_error(y_true, y_pred):
+            ape = []
+            for k in range(len(y_true)):
+                # if abs(y_true[k])!=0 and k not in z1 and k not in z2:
+                if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+                    ape.append(abs((y_true[k] - y_pred[k]) / y_true[k]))
+            # plt.hist(ape, bins='auto', color='orange')
+            # plt.xlabel('MAPE')
+            # plt.ylabel('frequency')
+            # plt.grid()
+            #
+            # plt.pause(3)
+            # plt.close()
+            ape = sorted(ape)
+            indexes = np.where(ape < np.percentile(ape, 90))[0]
+            ape = [ape[k] for k in indexes]
+            # print(ape)
+
+            return np.mean(np.array(ape)) * 100
+
+        def median_absolute_percentage_error(y_true, y_pred):
+            ape = []
+            for k in range(len(y_true)):
+                if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+                    # if abs(y_true[k])!=0  and k not in z1 and k not in z2:
+                    ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
+            ape = sorted(ape)
+            indexes = np.where(ape < np.percentile(ape, 90))[0]
+            ape = [ape[k] for k in indexes]
+            return np.median(np.array(ape)) * 100
+
+        def mean_percentage_r_error(y_true, y_pred):
+            ape = []
+            for k in range(len(y_true)):
+                if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
+                    # if abs(y_true[k])!=0  and k not in z1 and k not in z2:
+                    ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
+            ape = sorted(ape)
+            indexes = np.where(ape < np.percentile(ape, 90))[0]
+            ape = [ape[k] for k in indexes]
+            return sqrt(np.mean(np.array(ape)))
+
+        map = mean_absolute_percentage_error(ytr, ypr)
+        print('MAPE is ', map)
+        meap = median_absolute_percentage_error(ytr, ypr)
+        print('MEAPE is ', meap)
+        rmsre = mean_percentage_r_error(ytr, ypr)
+        print('RMSRE is ', rmsre)
+
+        # fig = plt.figure(facecolor='white', figsize=(10, 8))
+        # plt.subplot(2, 1, 1)
+        # plt.plot(ytr, label='Test Real Data', color='orange')
+        # plt.legend()
+        # plt.subplot(2, 1, 2)
+        # plt.plot(ypr, label='Prediction Real Data, MAPE = %.4f%% ,\n '
+        #                                     ' RMSE=%.4f  , RMSRE=%.4f  ' % (
+        #                                     map, rms, rmsre))
+        # plt.legend()
+        # plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS/5min/resutls'
+        #             '/imf' + str(imf_index) + '/prediction_normalize' + '.png', dpi=700)
+        # plt.pause(5)
+        # plt.close()
+
+        ''' denoramalize the actual and predicted data '''
+        min_test, max_test, ytr_revert = denorm_v2(ytr, MaxAbsScalerObj)
+        min_predicted, max_predicted, ypr_revert = denorm_v2(ypr, MaxAbsScalerObj)
+
+
+        ytr_revert = np.reshape(ytr_revert, (ytr_revert.size,))
+        ypr_revert = np.reshape(ypr_revert, (ypr_revert.size,))
+
+        map_denormalize = mean_absolute_percentage_error(ytr_revert, ypr_revert)
+        print('MAPE in original scale is ', map_denormalize)
+        meap_denormalize = median_absolute_percentage_error(ytr_revert, ypr_revert)
+        print('MEAPE in original scale is ', meap_denormalize)
+        rms_denormalize = sqrt(mean_squared_error(ytr_revert, ypr_revert))
+        print('RMSE in original scale is ', rms_denormalize)
+        rmsre_denorm = mean_percentage_r_error(ytr_revert, ypr_revert)
+        print(' ------------------------------------')
+
+        fig = plt.figure(facecolor='white', figsize=(10, 8))
+        plt.subplot(3, 1, 1)
+        plt.plot(ts_test ,ytr_revert, label='Test Real Data', color='orange')
+        plt.plot(ts_test ,ypr_revert, label='Prediction Real Data', color='brown',alpha=0.5)
+        plt.legend()
+        plt.subplot(3, 1, 2)
+        plt.plot(ts_test ,ytr_revert, label='Test Real Data', color='orange')
+        plt.legend()
+        plt.subplot(3, 1, 3)
+        plt.plot(ts_test ,ypr_revert, label='Prediction Real Data, MAPE = %.4f%% ,\n '
+                            ' RMSE=%.4f  , RMSRE=%.4f  ' % (
+                                map_denormalize, rms_denormalize, rmsre_denorm))
+        plt.legend()
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS/5min/resutls'
+                    '/imf' + str(imf_index) + '/prediction_original' + '.png', dpi=700)
+        plt.pause(5)
+        plt.close()
+
+        print('writing to DB!')
+        print(len(ts_test),len(ypr_revert),len(ytr_revert),len(X_test))
+        for k in range(len(ts_test)):
+            #print(ts_test[k], ytr_revert[k], ypr_revert[k],ytr[k])
+            cur.execute('update nasa_http_emd_5min set num_req_pred_gan=%s where imf_index=%s'
+                        ' and num_req_pred is null and ts=%s', \
+                        (float(ypr_revert[k]), int(imf_index), int(ts_test[k])+seq_len+1))
+            conn.commit()
 
 
 if __name__ == '__main__':
-    gan = GAN()
-    gan.train(epochs=100)
+    seq_len = 30
+    norm_version = 1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
+
+
+    for imf_index in range(4,17):
+
+        X_train, y_train, y_train_original_part, X_test, y_test, ts_train, ts_test, MaxAbsScalerObj = \
+            Train_LSTM.load_data(seq_len, imf_index, norm_version)
+
+        print(' --------------\n Shape of data is : \n ')
+        print('X_train: ', X_train.shape, ' Y_train: ', y_train.shape)
+        print('X_test: ', X_test.shape, ' Y_test: ', y_test.shape)
+        print('----------------\n')
+
+        gan = GAN()
+        gan.train(epochs=50,batchsize=64,verbose=False)
+        gan.test()
 
