@@ -44,7 +44,7 @@ class GAN():
         self.g_in_shape=(self.seq_len,1,)
         self.d_in_shape = (1+self.seq_len,1, ) # output of G and input to D
 
-        optimizer = Adam(lr=0.0002)
+        optimizer = Adam(lr=1e-4)
 
 
 
@@ -411,9 +411,9 @@ class GAN():
         plt.close()
 
         print('writing to DB!')
-        print(len(ts_test),len(ypr_revert),len(ytr_revert),len(X_test))
+        #print(len(ts_test),len(ypr_revert),len(ytr_revert),len(X_test))
         for k in range(len(ts_test)):
-            #print(ts_test[k], ytr_revert[k], ypr_revert[k],ytr[k])
+            print(ts_test[k], ytr_revert[k], ypr_revert[k],ytr[k])
             cur.execute('update saskatchewan_http_emd_30min set num_req_pred_gan=%s where imf_index=%s'
                         ' and num_req_pred is null and ts=%s', \
                         (float(ypr_revert[k]), int(imf_index), int(ts_test[k])+seq_len+1))
@@ -427,6 +427,7 @@ if __name__ == '__main__':
 
     for imf_index in range(1,5):
         epoches=200 if imf_index<=4 else 20
+        #epoches=100
 
         X_train, y_train, y_train_original_part, X_test, y_test, ts_train, ts_test, MaxAbsScalerObj = \
             Train_LSTM.load_data(seq_len, imf_index, norm_version)
@@ -437,6 +438,6 @@ if __name__ == '__main__':
         print('----------------\n')
 
         gan = GAN()
-        gan.train(epochs=epoches,batchsize=128,verbose=False)
+        gan.train(epochs=epoches,batchsize=512,verbose=False)
         gan.test()
 
