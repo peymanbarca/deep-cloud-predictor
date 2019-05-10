@@ -16,7 +16,7 @@ cur0=conn.cursor()
 
 
 
-start_imf=3
+start_imf=6
 
 def mean_absolute_percentage_error(y_true, y_pred):
 

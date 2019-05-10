@@ -426,7 +426,7 @@ if __name__ == '__main__':
 
 
     for imf_index in range(1,5):
-        epoches=30 if imf_index<=4 else 20
+        epoches=200 if imf_index<=4 else 20
 
         X_train, y_train, y_train_original_part, X_test, y_test, ts_train, ts_test, MaxAbsScalerObj = \
             Train_LSTM.load_data(seq_len, imf_index, norm_version)
@@ -437,6 +437,6 @@ if __name__ == '__main__':
         print('----------------\n')
 
         gan = GAN()
-        gan.train(epochs=epoches,batchsize=16,verbose=False)
+        gan.train(epochs=epoches,batchsize=128,verbose=False)
         gan.test()
 
