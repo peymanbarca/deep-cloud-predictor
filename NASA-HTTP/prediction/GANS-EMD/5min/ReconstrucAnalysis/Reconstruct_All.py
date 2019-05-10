@@ -29,7 +29,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS/5min/resutls'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/5min/resutls'
                 '/MAPE_from_imf_' + str(start_imf) + '.png', dpi=600)
     plt.pause(3)
     plt.close()
@@ -93,7 +93,7 @@ for i in range(start_imf,17):
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_svr from nasa_http_emd_5min where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_gan from nasa_http_emd_5min where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_gan is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -158,7 +158,7 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS/5min/resutls'
+plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/5min/resutls'
             '/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=600)
 plt.pause(7)
 plt.close()

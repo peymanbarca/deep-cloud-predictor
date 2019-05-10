@@ -16,7 +16,9 @@ cur0=conn.cursor()
 
 
 
-start_imf=4
+start_imf=1
+imfs1=[1,2,3]
+imfs2=[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 def mean_absolute_percentage_error(y_true, y_pred):
 
@@ -29,8 +31,8 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/30min/resutls'
-                '/MAPE_from_imf_' + str(start_imf) + '.png', dpi=600)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/1min/resutls'
+                '/MAPE_from_imf_' + str(start_imf) + '_many.png', dpi=600)
     plt.pause(3)
     plt.close()
     ape=sorted(ape)
@@ -87,13 +89,13 @@ main_test_req_pred=[]
 
 
 
-for i in range(start_imf,20):
+for i in imfs1:
     print(i,' ...')
     emd_imf=i
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_gan from saskatchewan_http_emd_30min where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_gan from nasa_http_emd_1min where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_gan is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -107,13 +109,54 @@ for i in range(start_imf,20):
     main_test_req_pred.append(list(num_req_pred))
 
     print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
-    cur0.execute('select count(1) from saskatchewan_http_emd_30min where imf_index=1 and '
-                 'num_req_pred is null and num_req_pred_gan is  null')
+    cur0.execute('select count(1) from nasa_http_emd_1min where imf_index=1 and '
+                 'num_req_pred is null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_30min where imf_index=%s and '
-                 'num_req_pred is null and num_req_pred_gan is null '
-                 ' order by ts limit %s ', (int(emd_imf),int(total)-1))
+    cur0.execute('select ts,num_of_req from nasa_http_emd_1min where imf_index=%s and '
+                 'num_req_pred is null '
+                 ' order by ts limit %s offset 2000 ', (int(emd_imf),int(total-len(test_ts))))
+    data = np.array(cur0.fetchall())
+    ts_train = data[:, 0]
+    num_req_train = data[:, 1]
+    train_ts = ts_train
+    print('length of train set: ', len(ts_train), len(num_req_train))
+    main_train_req.append(list(num_req_train))
+
+
+
+for i in imfs2:
+    print('----------------------', i, '---------- from LSTM-EMD Method')
+    print(i,' ...')
+    emd_imf=i
+
+
+
+    cur0.execute('select ts,num_of_req,num_req_pred from nasa_http_emd_1min where imf_index=%s'
+                 ' and num_req_pred is not null'
+                 ' order by ts',([int(emd_imf)]))
+    data=np.array(cur0.fetchall())
+
+    ts=data[:,0]
+    num_req=data[:,1]
+    num_req_pred=data[:,2]
+
+    num_req = np.delete(num_req, [0, 1])
+    num_req_pred = np.delete(num_req_pred, [0, 1])
+    ts = np.delete(ts, [0, 1])
+
+    test_ts=ts
+    main_test_req.append(list(num_req))
+    main_test_req_pred.append(list(num_req_pred))
+
+    print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
+    cur0.execute('select count(1) from nasa_http_emd_1min where imf_index=1 and '
+                 'num_req_pred is null')
+    total=cur0.fetchall()
+    total=np.array(total)[0][0]
+    cur0.execute('select ts,num_of_req from nasa_http_emd_1min where imf_index=%s and '
+                 'num_req_pred is  null'
+                 ' order by ts limit %s ', (int(emd_imf),int(total-len(test_ts))))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
     num_req_train = data[:, 1]
@@ -151,15 +194,15 @@ plt.plot(test_ts, main_test_req_, color='blue',alpha=0.5,
 plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
          label='Prediction Req')
 ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.4)
-plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.9,
+plt.plot(ts,main_test_req_,'-.',color='blue',label='Real Req',alpha=0.9)
+plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.4,
          label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/30min/resutls'
-            '/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=600)
+plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/1min/resutls'
+            '/main_reconstruct_from_imf_'+str(start_imf) + '_many.png', dpi=600)
 plt.pause(7)
 plt.close()
 

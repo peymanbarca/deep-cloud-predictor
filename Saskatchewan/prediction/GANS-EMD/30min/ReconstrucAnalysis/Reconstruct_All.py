@@ -16,7 +16,7 @@ cur0=conn.cursor()
 
 
 
-start_imf=1
+start_imf=6
 
 def mean_absolute_percentage_error(y_true, y_pred):
 
@@ -93,7 +93,7 @@ for i in range(start_imf,20):
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_svr from saskatchewan_http_emd_30min where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_gan from saskatchewan_http_emd_30min where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_gan is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -151,8 +151,8 @@ plt.plot(test_ts, main_test_req_, color='blue',alpha=0.5,
 plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
          label='Prediction Req')
 ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.4)
-plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.9,
+plt.plot(ts,main_test_req_,'-.',color='blue',label='Real Req',alpha=0.9)
+plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.4,
          label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
