@@ -17,7 +17,7 @@ cur0=conn.cursor()
 
 start_imf=1
 imfs1=[1,2,3]
-imfs2=[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+imfs2=[4,5,6,7,8,9,10,11,12,13,14,15,16,17]
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
