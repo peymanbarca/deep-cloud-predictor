@@ -1,0 +1,45 @@
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+import psycopg2
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+import itertools
+
+hostname = 'localhost'
+username = 'postgres'
+password = 'inter2010'
+database = 'load_cloud'
+
+conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
+cur0=conn.cursor()
+
+
+
+total_req=[]
+
+for imf_index in range(1,17):
+    print(imf_index)
+    cur0.execute('select ts,num_of_req from nasa_http_emd_5min '
+                 ' where imf_index={} '
+                 ' order by ts offset 400'.format(imf_index))
+    data = np.array(cur0.fetchall())
+
+    ts = data[:, 0]
+    num_req = data[:, 1]
+
+    total_req.append(list(num_req))
+
+main_total_req__=np.zeros(len(ts))
+for k in total_req:
+    main_total_req__+=np.array(k,dtype=float)
+
+fig = plt.figure(facecolor='white', figsize=(14, 12))
+plt.plot(ts ,main_total_req__,'-.', label='Real Data', color='orange')
+plt.legend()
+plt.xlabel('time symbol')
+plt.ylabel('number of requests')
+plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/5min/resutls/Analysis'
+            '/Main-Signal-EMDs' + '.png', dpi=700)
+plt.pause(5)
+plt.close()
