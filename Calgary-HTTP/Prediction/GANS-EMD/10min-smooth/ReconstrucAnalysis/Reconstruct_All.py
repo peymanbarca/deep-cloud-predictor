@@ -29,7 +29,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/GANS-EMD/10min-smooth/resutls'
                 '/MAPE_from_imf_' + str(start_imf) + '.png', dpi=600)
     plt.pause(3)
     plt.close()
@@ -93,7 +93,7 @@ for i in range(start_imf,21):
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_gan from saskatchewan_http_emd_10min_copy where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_gan from calgary_http_emd_10min_copy where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_gan is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -107,11 +107,11 @@ for i in range(start_imf,21):
     main_test_req_pred.append(list(num_req_pred))
 
     print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
-    cur0.execute('select count(1) from saskatchewan_http_emd_10min_copy where imf_index=1 and '
+    cur0.execute('select count(1) from calgary_http_emd_10min_copy where imf_index=1 and '
                  'num_req_pred is null and num_req_pred_gan is  null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min_copy where imf_index=%s and '
+    cur0.execute('select ts,num_of_req from calgary_http_emd_10min_copy where imf_index=%s and '
                  'num_req_pred is null and num_req_pred_gan is null '
                  ' order by ts limit %s ', (int(emd_imf),int(total)-1))
     data = np.array(cur0.fetchall())
@@ -158,7 +158,7 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/GANS-EMD/10min-smooth/resutls'
             '/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=600)
 plt.pause(7)
 plt.close()

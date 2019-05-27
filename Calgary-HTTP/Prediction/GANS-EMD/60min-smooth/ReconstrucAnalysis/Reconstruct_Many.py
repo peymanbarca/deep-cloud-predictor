@@ -16,8 +16,8 @@ cur0=conn.cursor()
 
 
 start_imf=1
-imfs1=[1,2,3,4,5,6,7,8,9,10]
-imfs2=[11,12,13,14,15,16,17,18,19,20]
+imfs1=[1,2,3]
+imfs2=[4,5,6,7,8,9,10,11,12,13,14,15,16,17]
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
@@ -30,7 +30,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/GANS-EMD/60min-smooth/resutls'
                 '/MAPE_from_imf_' + str(start_imf) + '_many.png', dpi=600)
     plt.pause(3)
     plt.close()
@@ -95,7 +95,7 @@ for i in imfs1:
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_gan from saskatchewan_http_emd_10min_copy where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_gan from calgary_http_emd_60min_copy where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_gan is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -109,11 +109,11 @@ for i in imfs1:
     main_test_req_pred.append(list(num_req_pred))
 
     print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
-    cur0.execute('select count(1) from saskatchewan_http_emd_10min_copy where imf_index=1 and '
+    cur0.execute('select count(1) from calgary_http_emd_60min_copy where imf_index=1 and '
                  'num_req_pred is null and num_req_pred_gan is  null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min_copy where imf_index=%s and '
+    cur0.execute('select ts,num_of_req from calgary_http_emd_60min_copy where imf_index=%s and '
                  'num_req_pred is null and num_req_pred_gan is null '
                  ' order by ts limit %s ', (int(emd_imf),int(total)-1))
     data = np.array(cur0.fetchall())
@@ -127,7 +127,7 @@ for j in imfs2:
 
     print('----------------------',j,'---------- from LSTM-EMD Method')
     cur0.execute(
-        'select ts,num_of_req,num_req_pred from saskatchewan_http_emd_10min_copy where imf_index=%s and num_req_pred is not null'
+        'select ts,num_of_req,num_req_pred from calgary_http_emd_60min_copy where imf_index=%s and num_req_pred is not null'
         ' order by ts', ([int(j)]))
     data = np.array(cur0.fetchall())
 
@@ -144,10 +144,10 @@ for j in imfs2:
     main_test_req.append(list(num_req))
     main_test_req_pred.append(list(num_req_pred))
     print('length of test set: ', len(test_ts), len(num_req), len(num_req_pred))
-    cur0.execute('select count(1) from saskatchewan_http_emd_10min_copy where imf_index=1 and num_req_pred is null')
+    cur0.execute('select count(1) from calgary_http_emd_60min_copy where imf_index=1 and num_req_pred is null')
     total = cur0.fetchall()
     total = np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min_copy where imf_index=%s and num_req_pred is  null '
+    cur0.execute('select ts,num_of_req from calgary_http_emd_60min_copy where imf_index=%s and num_req_pred is  null '
                  ' order by ts limit %s', (int(j), int(total - len(test_ts))-1 ))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
@@ -195,7 +195,7 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/GANS-EMD/60min-smooth/resutls'
            '/main_reconstruct_from_imf_'+str(start_imf) + '_many.png', dpi=600)
 plt.pause(7)
 plt.close()

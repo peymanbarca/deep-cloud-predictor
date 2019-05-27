@@ -281,7 +281,7 @@ class GAN():
             plt.plot(g_loss_predictions, color='green', label='g_loss_predictions')
             plt.legend()
             plt.grid()
-            plt.savefig('/home/vacek/Cloud/cloud-predictor/EPA-HTTP/prediction/GANS-EMD/10sec-smooth/resutls'
+            plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/GANS-EMD/30min-smooth/resutls'
                         '/imf' + str(imf_index) + '/losses' + '.png', dpi=700)
             plt.pause(4)
             plt.close()
@@ -418,7 +418,7 @@ class GAN():
                             ' RMSE=%.4f  , RMSRE=%.4f  ' % (
                                 map_denormalize, rms_denormalize, rmsre_denorm))
         plt.legend()
-        plt.savefig('/home/vacek/Cloud/cloud-predictor/EPA-HTTP/prediction/GANS-EMD/10sec-smooth/resutls'
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/GANS-EMD/30min-smooth/resutls'
                     '/imf' + str(imf_index) + '/prediction_original' + '.png', dpi=700)
         plt.pause(5)
         plt.close()
@@ -427,7 +427,7 @@ class GAN():
         print(len(ts_test),len(ypr_revert),len(ytr_revert),len(X_test))
         for k in range(len(ts_test)):
             #print(ts_test[k], ytr_revert[k], ypr_revert[k],ytr[k])
-            cur.execute('update epa_http_emd_10sec_copy set num_req_pred_gan=%s where imf_index=%s'
+            cur.execute('update calgary_http_emd_30min_copy set num_req_pred_gan=%s where imf_index=%s'
                         ' and num_req_pred is null and ts=%s', \
                         (float(ypr_revert[k]), int(imf_index), int(ts_test[k])+seq_len+1))
             conn.commit()
@@ -438,7 +438,7 @@ if __name__ == '__main__':
     norm_version = 1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
 
-    for imf_index in range(1,15):
+    for imf_index in range(18,21):
         epoches=50 if imf_index<=4 else 10
 
         X_train, y_train, y_train_original_part, X_test, y_test, ts_train, ts_test, MaxAbsScalerObj = \
@@ -450,6 +450,6 @@ if __name__ == '__main__':
         print('----------------\n')
 
         gan = GAN()
-        gan.train(epochs=epoches,batchsize=32,verbose=False)
+        gan.train(epochs=epoches,batchsize=48,verbose=False)
         gan.test()
 
