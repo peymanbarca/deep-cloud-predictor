@@ -438,7 +438,7 @@ if __name__ == '__main__':
     norm_version = 1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
 
-    for imf_index in range(1,23):
+    for imf_index in range(1,4):
         epoches=50 if imf_index<=4 else 10
 
         X_train, y_train, y_train_original_part, X_test, y_test, ts_train, ts_test, MaxAbsScalerObj = \
@@ -450,6 +450,6 @@ if __name__ == '__main__':
         print('----------------\n')
 
         gan = GAN()
-        gan.train(epochs=epoches,batchsize=32,verbose=False)
+        gan.train(epochs=epoches,batchsize=128,verbose=False)
         gan.test()
 

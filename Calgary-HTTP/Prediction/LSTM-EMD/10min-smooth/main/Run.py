@@ -43,7 +43,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     ax.plot(ts_train, y_train_revert, color='red', label='Train Data')
     ax.plot(ts_test, y_test_revert, label='True Test Data')
     plt.plot(ts_test, y_predicted_revert,'-.', color='green',
-             label='Prediction-PWS=5sec , RMSE  = ' + str(rms_denormalize))
+             label='Prediction-PWS=10 min , RMSE  = ' + str(rms_denormalize))
     plt.legend()
     plt.grid()
     ax = fig.add_subplot(212)
@@ -51,20 +51,20 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     plt.plot(ts_test, y_predicted_revert,'-.', color='orange', label='Prediction',alpha=0.9)
     plt.legend()
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-EMD/5sec/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-EMD/10min-smooth/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 
 def write_prediction_to_db(ts_test,y_test,y_pred,imf):
-    cur.execute('delete from calgary_http_emd_10min  where imf_index=%s and  num_req_pred is not null', \
+    cur.execute('delete from calgary_http_emd_10min_copy  where imf_index=%s and  num_req_pred is not null', \
                 ([int(imf)]))
 
     conn.commit()
-    cur.execute('update calgary_http_emd_10min set num_req_pred=null where imf_index=%s', \
+    cur.execute('update calgary_http_emd_10min_copy set num_req_pred=null where imf_index=%s', \
                 ( [int(imf)]))
     conn.commit()
     for k in range(len(ts_test)):
-        cur.execute('insert into calgary_http_emd_10min (ts,num_of_req,imf_index,num_req_pred) values(%s,%s,%s,%s) ',
+        cur.execute('insert into calgary_http_emd_10min_copy (ts,num_of_req,imf_index,num_req_pred) values(%s,%s,%s,%s) ',
                     (int(ts_test[k]),int(y_test[k]),imf,float(y_pred[k])))
     conn.commit()
 
@@ -72,7 +72,7 @@ if __name__=='__main__':
     for ii in range(1,23):
         global_start_time = time.time()
         imf_index = ii
-        epochs = 500 if ii<5 else 200
+        epochs = 400 if ii<5 else 100
         seq_len = 10
 
         norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
@@ -95,7 +95,7 @@ if __name__=='__main__':
         history =model.fit(
             X_train,
             y_train,
-            batch_size=2048,
+            batch_size=4096,
             nb_epoch=epochs,
             validation_split=0.1)
 

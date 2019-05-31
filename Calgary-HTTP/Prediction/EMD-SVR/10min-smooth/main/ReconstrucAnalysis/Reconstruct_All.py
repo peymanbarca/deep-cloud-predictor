@@ -16,7 +16,7 @@ cur0=conn.cursor()
 
 
 
-start_imf=5
+start_imf=2
 
 def mean_absolute_percentage_error(y_true, y_pred):
 
@@ -92,7 +92,7 @@ for i in range(start_imf,23):
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_svr from calgary_http_emd_10min where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_svr from calgary_http_emd_10min_copy where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_svr is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -106,11 +106,11 @@ for i in range(start_imf,23):
     main_test_req_pred.append(list(num_req_pred))
 
     print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
-    cur0.execute('select count(1) from calgary_http_emd_10min where imf_index=1 and '
+    cur0.execute('select count(1) from calgary_http_emd_10min_copy where imf_index=1 and '
                  'num_req_pred is null and num_req_pred_svr is  null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from calgary_http_emd_10min where imf_index=%s and '
+    cur0.execute('select ts,num_of_req from calgary_http_emd_10min_copy where imf_index=%s and '
                  'num_req_pred is null and num_req_pred_svr is null '
                  ' order by ts limit %s ', (int(emd_imf),int(total)))
     data = np.array(cur0.fetchall())

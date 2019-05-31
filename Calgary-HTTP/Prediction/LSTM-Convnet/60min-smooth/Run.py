@@ -32,7 +32,7 @@ def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map,m
     plt.xlabel('Time Symbol')
     plt.ylabel('Normalized Req')
     plt.savefig(
-            '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min/results'
+            '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min-smooth/results'
             '/Normalized' + '.png',
             dpi=700)
 
@@ -64,7 +64,7 @@ def plot_results_denormalize(predicted_data,ts_test, true_data,ts_train,y_train,
     plt.xlabel('Time Symbol')
     plt.ylabel(' Original Req')
     plt.savefig(
-            '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min/results'
+            '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min-smooth/results'
             '/Main' + '.png',
             dpi=700)
 
@@ -113,7 +113,7 @@ if __name__=='__main__':
     plt.title('Training and validation loss')
     plt.legend()
     plt.savefig(
-            '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min/results'
+            '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min-smooth/results'
             '/Normalized_Train_Loss' + '.png',
             dpi=700)
     plt.pause(3)
@@ -158,7 +158,7 @@ if __name__=='__main__':
         plt.ylabel('frequency')
         plt.grid()
         plt.savefig(
-                '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min/results'
+                '/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-Convnet/60min-smooth/results'
                 '/MAPE' + '.png', dpi=600)
 
 

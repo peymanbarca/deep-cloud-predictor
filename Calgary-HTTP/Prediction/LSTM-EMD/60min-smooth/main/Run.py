@@ -51,20 +51,20 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     plt.plot(ts_test, y_predicted_revert,'-.', color='orange', label='Prediction',alpha=0.9)
     plt.legend()
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-EMD/60min/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/LSTM-EMD/60min-smooth/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 
 def write_prediction_to_db(ts_test,y_test,y_pred,imf):
-    cur.execute('delete from calgary_http_emd_60min  where imf_index=%s and  num_req_pred is not null', \
+    cur.execute('delete from calgary_http_emd_60min_copy  where imf_index=%s and  num_req_pred is not null', \
                 ([int(imf)]))
 
     conn.commit()
-    cur.execute('update calgary_http_emd_60min set num_req_pred=null where imf_index=%s', \
+    cur.execute('update calgary_http_emd_60min_copy set num_req_pred=null where imf_index=%s', \
                 ( [int(imf)]))
     conn.commit()
     for k in range(len(ts_test)):
-        cur.execute('insert into calgary_http_emd_60min (ts,num_of_req,imf_index,num_req_pred) values(%s,%s,%s,%s) ',
+        cur.execute('insert into calgary_http_emd_60min_copy (ts,num_of_req,imf_index,num_req_pred) values(%s,%s,%s,%s) ',
                     (int(ts_test[k]),int(y_test[k]),imf,float(y_pred[k])))
     conn.commit()
 

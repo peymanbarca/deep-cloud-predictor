@@ -4,9 +4,8 @@ from matplotlib import pyplot as plt
 from knn import perform_knn
 
 def normalizer(plot=False):
-    data=read_data()
-    ts=data[:,0]
-    num_req=data[:,1]
+    ts,num_req=read_data()
+
 
     print('-----------------------')
     from sklearn import preprocessing

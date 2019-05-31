@@ -157,7 +157,7 @@ for imf_index in range(1,23):
     plt.subplot(3,1,3)
     plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f%% ,  RMSE=%.4f  ,\n  MEAPE=%.4f%% , RMSRE=%.4f '% (map,rms,meap,rmsre))
     plt.legend()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/EMD-SVR/5sec/main/results'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/EMD-SVR/10min-smooth/main/results'
                 '/imf' + str(imf_index) + '/normalize' + '.png', dpi=900)
     plt.pause(5)
     plt.close()
@@ -199,7 +199,7 @@ for imf_index in range(1,23):
     plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f%% ,\n '
                                        ' RMSE=%.4f  , RMSRE=%.4f  '% (map_denormalize,rms_denormalize,rmsre_denorm))
     plt.legend()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/EMD-SVR/5sec/main/results'
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Calgary-HTTP/Prediction/EMD-SVR/10min-smooth/main/results'
                 '/imf' + str(imf_index) + '/original' + '.png', dpi=900)
     plt.pause(5)
     plt.close()
@@ -207,7 +207,7 @@ for imf_index in range(1,23):
     def write_prediction_to_db(ts_test,y_pred,imf):
 
         for k in range(len(ts_test)):
-            cur.execute('update calgary_http_emd_10min set num_req_pred_svr=%s where imf_index=%s'
+            cur.execute('update calgary_http_emd_10min_copy set num_req_pred_svr=%s where imf_index=%s'
                         ' and num_req_pred is null and ts=%s', \
                         ( y_pred[k],int(imf),ts_test[k]))
             conn.commit()
