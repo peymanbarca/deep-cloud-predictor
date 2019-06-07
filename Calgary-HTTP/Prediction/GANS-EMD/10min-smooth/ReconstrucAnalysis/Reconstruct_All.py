@@ -16,7 +16,7 @@ cur0=conn.cursor()
 
 
 
-start_imf=3
+start_imf=1
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true,y_pred=np.abs(y_true),np.abs(y_pred)
@@ -87,7 +87,7 @@ main_test_req_pred=[]
 
 
 
-for i in range(start_imf,21):
+for i in range(start_imf,23):
     print(i,' ...')
     emd_imf=i
 
