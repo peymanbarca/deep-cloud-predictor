@@ -15,23 +15,24 @@ conn = psycopg2.connect(host=hostname, user=username, password=password, dbname=
 cur0=conn.cursor()
 
 
+
 start_imf=1
 imfs1=[1,2,3]
-imfs2=[4,5,6,7,8,9,10,11,12,13,14,15,16,17]
+imfs2=[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 def mean_absolute_percentage_error(y_true, y_pred):
-    #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+
     ape = []
     for k in range(len(y_true)):
         #if abs(y_true[k])!=0 and k not in z1 and k not in z2:
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
             ape.append(abs((y_true[k] - y_pred[k]) / y_true[k]))
-    plt.hist(ape, bins='auto', color='orange')
+    plt.hist(ape, bins='auto', color='gold')
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls'
-                '/MAPE_from_imf_' + str(start_imf) + '_many.png', dpi=600)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/1min/resutls'
+                '/MAPE_from_imf_' + str(start_imf) + '_Gans_LSTM.png', dpi=600)
     plt.pause(3)
     plt.close()
     ape=sorted(ape)
@@ -42,7 +43,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.array(ape)) * 100
 
 def mean_percentage_error(y_true, y_pred):
-    #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+
     ape = []
     for k in range(len(y_true)):
         #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
@@ -54,7 +55,7 @@ def mean_percentage_error(y_true, y_pred):
     return np.mean(np.array(ape)) * 100
 
 def median_absolute_percentage_error(y_true, y_pred):
-    #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
@@ -66,7 +67,7 @@ def median_absolute_percentage_error(y_true, y_pred):
     return np.median(np.array(ape)) * 100
 
 def mean_percentage_r_error(y_true, y_pred):
-    #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
+
     ape = []
     for k in range(len(y_true)):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
@@ -89,13 +90,12 @@ main_test_req_pred=[]
 
 
 for i in imfs1:
-
     print(i,' ...')
     emd_imf=i
 
 
 
-    cur0.execute('select ts,num_of_req,num_req_pred_gan from saskatchewan_http_emd_20min_copy where imf_index=%s'
+    cur0.execute('select ts,num_of_req,num_req_pred_gan from nasa_http_emd_1min where imf_index=%s'
                  ' and num_req_pred is null and num_req_pred_gan is not null'
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
@@ -109,13 +109,13 @@ for i in imfs1:
     main_test_req_pred.append(list(num_req_pred))
 
     print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
-    cur0.execute('select count(1) from saskatchewan_http_emd_20min_copy where imf_index=1 and '
-                 'num_req_pred is null and num_req_pred_gan is  null')
+    cur0.execute('select count(1) from nasa_http_emd_1min where imf_index=1 and '
+                 'num_req_pred is null')
     total=cur0.fetchall()
     total=np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_20min_copy where imf_index=%s and '
-                 'num_req_pred is null and num_req_pred_gan is null '
-                 ' order by ts limit %s ', (int(emd_imf),int(total)-1))
+    cur0.execute('select ts,num_of_req from nasa_http_emd_1min where imf_index=%s and '
+                 'num_req_pred is null '
+                 ' order by ts limit %s offset 2000 ', (int(emd_imf),int(total-len(test_ts))))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
     num_req_train = data[:, 1]
@@ -123,40 +123,46 @@ for i in imfs1:
     print('length of train set: ', len(ts_train), len(num_req_train))
     main_train_req.append(list(num_req_train))
 
-for j in imfs2:
 
-    print('----------------------',j,'---------- from LSTM-EMD Method')
-    cur0.execute(
-        'select ts,num_of_req,num_req_pred from saskatchewan_http_emd_20min_copy where imf_index=%s and num_req_pred is not null'
-        ' order by ts', ([int(j)]))
-    data = np.array(cur0.fetchall())
 
-    ts = data[:, 0]
-    num_req = data[:, 1]
-    num_req_pred = data[:, 2]
+for i in imfs2:
+    print('----------------------', i, '---------- from LSTM-EMD Method')
+    print(i,' ...')
+    emd_imf=i
 
-    num_req=np.delete(num_req,[0,1])
-    num_req_pred=np.delete(num_req_pred,[0,1])
-    ts = np.delete(ts, [0,1])
 
-    test_ts = ts
 
+    cur0.execute('select ts,num_of_req,num_req_pred from nasa_http_emd_1min where imf_index=%s'
+                 ' and num_req_pred is not null'
+                 ' order by ts',([int(emd_imf)]))
+    data=np.array(cur0.fetchall())
+
+    ts=data[:,0]
+    num_req=data[:,1]
+    num_req_pred=data[:,2]
+
+    num_req = np.delete(num_req, [0, 1])
+    num_req_pred = np.delete(num_req_pred, [0, 1])
+    ts = np.delete(ts, [0, 1])
+
+    test_ts=ts
     main_test_req.append(list(num_req))
     main_test_req_pred.append(list(num_req_pred))
-    print('length of test set: ', len(test_ts), len(num_req), len(num_req_pred))
-    cur0.execute('select count(1) from saskatchewan_http_emd_20min_copy where imf_index=1 and num_req_pred is null')
-    total = cur0.fetchall()
-    total = np.array(total)[0][0]
-    cur0.execute('select ts,num_of_req from saskatchewan_http_emd_20min_copy where imf_index=%s and num_req_pred is  null '
-                 ' order by ts limit %s', (int(j), int(total - len(test_ts))-1 ))
+
+    print('length of test set: ',len(test_ts),len(num_req),len(num_req_pred))
+    cur0.execute('select count(1) from nasa_http_emd_1min where imf_index=1 and '
+                 'num_req_pred is null')
+    total=cur0.fetchall()
+    total=np.array(total)[0][0]
+    cur0.execute('select ts,num_of_req from nasa_http_emd_1min where imf_index=%s and '
+                 'num_req_pred is  null'
+                 ' order by ts limit %s ', (int(emd_imf),int(total-len(test_ts))))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
     num_req_train = data[:, 1]
     train_ts = ts_train
     print('length of train set: ', len(ts_train), len(num_req_train))
     main_train_req.append(list(num_req_train))
-
-
 
 main_train_req__=np.zeros(len(train_ts))
 for k in main_train_req:
@@ -195,8 +201,8 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls'
-           '/main_reconstruct_from_imf_'+str(start_imf) + '_many.png', dpi=600)
+plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/1min/resutls'
+            '/main_reconstruct_from_imf_'+str(start_imf) + '_Gans_LSTM.png', dpi=600)
 plt.pause(7)
 plt.close()
 
