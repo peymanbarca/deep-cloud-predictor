@@ -11,7 +11,7 @@ cur1=conn.cursor()
 
 def read_data(imf_num):
 
-    cur1.execute('select ts,num_of_req from saskatchewan_http_emd_30min where imf_index=%s and num_req_pred is null'
+    cur1.execute('select ts,num_of_req from saskatchewan_http_emd_30min where imf_index=%s'
                  ' order by ts',([int(imf_num)]))
     data=np.array(cur1.fetchall())
     print('data read from DB!')

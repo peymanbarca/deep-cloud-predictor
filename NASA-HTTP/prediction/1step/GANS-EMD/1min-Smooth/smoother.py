@@ -11,7 +11,7 @@ cur1=conn.cursor()
 
 def read_data(imf_num):
 
-    cur1.execute('select ts,num_of_req from saskatchewan_http_emd_10min where imf_index=%s'
+    cur1.execute('select ts,num_of_req from nasa_http_emd_1min where imf_index=%s and num_req_pred is null'
                  ' order by ts',([int(imf_num)]))
     data=np.array(cur1.fetchall())
     print('data read from DB!')
@@ -63,7 +63,7 @@ def smooth_demo(imf_index):
     #
     for k in range(len(ts)):
         print(k)
-        cur1.execute('update saskatchewan_http_emd_10min_copy set num_of_req=%s where imf_index=%s'
+        cur1.execute('update nasa_http_emd_1min_copy set num_of_req=%s where imf_index=%s'
                     ' and ts=%s', \
                     (int(num_req_smooth[k]),int(imf_index), int(ts[k])))
         conn.commit()
