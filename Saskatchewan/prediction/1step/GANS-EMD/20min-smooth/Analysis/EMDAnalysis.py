@@ -62,7 +62,7 @@ plt.plot(ts ,main_total_req_smooth__,'-.', label='Real Smoothed Data', color='br
 plt.legend()
 plt.xlabel('time symbol')
 plt.ylabel('number of requests')
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls/Analysis'
+plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/20min-smooth/resutls/Analysis'
             '/Main-Signal-EMDs' + '.png', dpi=700)
 plt.pause(5)
 plt.close()

@@ -59,7 +59,7 @@ def smooth_demo(imf_index):
     plt.subplot(212)
     plt.plot(ts,num_req_smooth,'green',label='smooth data ')
     plt.legend()
-    plt.show()
+    #plt.show()
     #
     for k in range(len(ts)):
         print(k)
@@ -70,4 +70,4 @@ def smooth_demo(imf_index):
 
 
 if __name__ == '__main__':
-    smooth_demo(3)
+    smooth_demo(1)

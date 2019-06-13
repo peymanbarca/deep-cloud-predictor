@@ -70,4 +70,4 @@ def smooth_demo(imf_index):
 
 
 if __name__ == '__main__':
-    smooth_demo(3)
+    smooth_demo(1)
