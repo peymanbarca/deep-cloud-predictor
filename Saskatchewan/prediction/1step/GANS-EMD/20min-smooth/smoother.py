@@ -11,9 +11,10 @@ cur1=conn.cursor()
 
 def read_data(imf_num):
 
-    cur1.execute('select ts,num_of_req from saskatchewan_http_emd_20min where imf_index=%s'
+    cur1.execute('select ts,num_of_req from saskatchewan_http_emd_20min where imf_index=%s  and num_req_pred is null'
                  ' order by ts',([int(imf_num)]))
     data=np.array(cur1.fetchall())
+    print(len(data))
     print('data read from DB!')
     return data
 
@@ -48,7 +49,7 @@ def smooth_demo(imf_index):
     ts = data[:, 0]
     num_req = data[:, 1]
 
-    size=10
+    size=5
     num_req_smooth = smooth(num_req,size=size)
     num_req_smooth= np.concatenate([np.zeros(shape=(size-1,1)), num_req_smooth])
 
@@ -62,7 +63,8 @@ def smooth_demo(imf_index):
     plt.show()
     #
     for k in range(len(ts)):
-        print(k)
+        if k%1000==1:
+            print(k)
         cur1.execute('update saskatchewan_http_emd_20min_copy set num_of_req=%s where imf_index=%s'
                     ' and ts=%s', \
                     (int(num_req_smooth[k]),int(imf_index), int(ts[k])))
@@ -70,4 +72,5 @@ def smooth_demo(imf_index):
 
 
 if __name__ == '__main__':
-    smooth_demo(1)
+    for i in range(1,5):
+        smooth_demo(i)

@@ -22,7 +22,7 @@ total_req_smooth=[]
 for imf_index in range(1,21):
     print(imf_index)
     cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min '
-                 ' where imf_index={} '
+                 ' where imf_index={}  and num_req_pred is null'
                  ' order by ts'.format(imf_index))
     data = np.array(cur0.fetchall())
 
@@ -38,7 +38,7 @@ for k in total_req:
 for imf_index in range(1,21):
     print(imf_index)
     cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min_copy '
-                 ' where imf_index={} '
+                 ' where imf_index={}  and num_req_pred is null'
                  ' order by ts'.format(imf_index))
     data = np.array(cur0.fetchall())
 
@@ -62,7 +62,7 @@ plt.plot(ts ,main_total_req_smooth__,'-.', label='Real Smoothed Data', color='br
 plt.legend()
 plt.xlabel('time symbol')
 plt.ylabel('number of requests')
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls/Analysis'
+plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/10min-smooth/resutls/Analysis'
             '/Main-Signal-EMDs' + '.png', dpi=700)
 plt.pause(5)
 plt.close()
