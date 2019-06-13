@@ -33,7 +33,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.pause(3)
     plt.close()
     ape=sorted(ape)
-    indexes=np.where(ape<np.percentile(ape,90))[0]
+    indexes=np.where(ape<np.percentile(ape,95))[0]
     ape=[ape[k] for k in indexes]
     #print(ape)
 
@@ -47,7 +47,7 @@ def mean_percentage_error(y_true, y_pred):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
             ape.append(((y_true[k] - y_pred[k]) / y_true[k]))
     ape = sorted(ape)
-    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    indexes = np.where(ape < np.percentile(ape, 95))[0]
     ape = [ape[k] for k in indexes]
     return np.mean(np.array(ape)) * 100
 
@@ -59,7 +59,7 @@ def median_absolute_percentage_error(y_true, y_pred):
         #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
             ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
     ape = sorted(ape)
-    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    indexes = np.where(ape < np.percentile(ape, 95))[0]
     ape = [ape[k] for k in indexes]
     return np.median(np.array(ape)) * 100
 
@@ -71,7 +71,7 @@ def mean_percentage_r_error(y_true, y_pred):
         #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
             ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
     ape = sorted(ape)
-    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    indexes = np.where(ape < np.percentile(ape, 95))[0]
     ape = [ape[k] for k in indexes]
     return sqrt(np.mean(np.array(ape)))
 
@@ -151,7 +151,7 @@ plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
          label='Prediction Req')
 ax = fig.add_subplot(212)
 plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.4)
-plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.9,
+plt.plot(ts,main_test_req_pred_,'-.',color='green',alpha=0.9,
          label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
