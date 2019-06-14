@@ -277,7 +277,7 @@ class GAN():
         plt.plot(g_loss_predictions, color='green', label='g_loss_predictions')
         plt.legend()
         plt.grid()
-        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls'
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/20min-smooth/resutls'
                     '/imf' + str(imf_index) + '/losses' + '.png', dpi=700)
         plt.pause(4)
         plt.close()
@@ -405,7 +405,7 @@ class GAN():
                             ' RMSE=%.4f  , RMSRE=%.4f  ' % (
                                 map_denormalize, rms_denormalize, rmsre_denorm))
         plt.legend()
-        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls'
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/20min-smooth/resutls'
                     '/imf' + str(imf_index) + '/prediction_original' + '.png', dpi=700)
         plt.pause(5)
         plt.close()
@@ -425,7 +425,7 @@ if __name__ == '__main__':
     norm_version = 1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
 
-    for imf_index in range(4,18):
+    for imf_index in range(1,18):
         epoches=40 if imf_index<=4 else 20
         #epoches=100
 
@@ -438,6 +438,6 @@ if __name__ == '__main__':
         print('----------------\n')
 
         gan = GAN()
-        gan.train(epochs=epoches,batchsize=32,verbose=False)
+        gan.train(epochs=epoches,batchsize=40,verbose=False)
         gan.test()
 

@@ -30,7 +30,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls'
+    plt.savefig('../resutls'
                 '/MAPE_from_imf_' + str(start_imf) + '_Gans_SVR.png', dpi=600)
     plt.pause(3)
     plt.close()
@@ -199,7 +199,7 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/20min-smooth/resutls'
+plt.savefig('../resutls'
            '/main_reconstruct_from_imf_'+str(start_imf) + '_Gans_SVR.png', dpi=600)
 plt.pause(7)
 plt.close()

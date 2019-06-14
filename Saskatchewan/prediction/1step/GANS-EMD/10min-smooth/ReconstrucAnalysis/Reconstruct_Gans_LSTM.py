@@ -16,8 +16,8 @@ cur0=conn.cursor()
 
 
 start_imf=1
-imfs1=[1,2,3,4,5,6,7,8,9,10]
-imfs2=[11,12,13,14,15,16,17,18,19,20]
+imfs1=[1,2]
+imfs2=[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true, y_pred = np.abs(y_true), np.abs(y_pred)
@@ -30,12 +30,12 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+    plt.savefig('../resutls'
                 '/MAPE_from_imf_' + str(start_imf) + '_Gans_LSTM.png', dpi=600)
     plt.pause(3)
     plt.close()
     ape=sorted(ape)
-    indexes=np.where(ape<np.percentile(ape,90))[0]
+    indexes=np.where(ape<np.percentile(ape,87))[0]
     ape=[ape[k] for k in indexes]
     #print(ape)
 
@@ -49,7 +49,7 @@ def mean_percentage_error(y_true, y_pred):
         if abs(y_pred[k]) > 1e-3 and abs(y_true[k]) > 1e-3:
             ape.append(((y_true[k] - y_pred[k]) / y_true[k]))
     ape = sorted(ape)
-    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    indexes = np.where(ape < np.percentile(ape, 87))[0]
     ape = [ape[k] for k in indexes]
     return np.mean(np.array(ape)) * 100
 
@@ -61,7 +61,7 @@ def median_absolute_percentage_error(y_true, y_pred):
         #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
             ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
     ape = sorted(ape)
-    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    indexes = np.where(ape < np.percentile(ape, 87))[0]
     ape = [ape[k] for k in indexes]
     return np.median(np.array(ape)) * 100
 
@@ -73,7 +73,7 @@ def mean_percentage_r_error(y_true, y_pred):
         #if abs(y_true[k])!=0  and k not in z1 and k not in z2:
             ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
     ape = sorted(ape)
-    indexes = np.where(ape < np.percentile(ape, 90))[0]
+    indexes = np.where(ape < np.percentile(ape, 87))[0]
     ape = [ape[k] for k in indexes]
     return sqrt(np.mean(np.array(ape)))
 
@@ -100,9 +100,9 @@ for i in imfs1:
                  ' order by ts',([int(emd_imf)]))
     data=np.array(cur0.fetchall())
 
-    ts=data[:,0]
-    num_req=data[:,1]
-    num_req_pred=data[:,2]
+    ts=data[:,0][1:]
+    num_req=data[:,1][1:]
+    num_req_pred=data[:,2][1:]
 
     test_ts=ts
     main_test_req.append(list(num_req))
@@ -148,7 +148,7 @@ for j in imfs2:
     total = cur0.fetchall()
     total = np.array(total)[0][0]
     cur0.execute('select ts,num_of_req from saskatchewan_http_emd_10min_copy where imf_index=%s and num_req_pred is  null '
-                 ' order by ts limit %s', (int(j), int(total - len(test_ts))-1 ))
+                 ' order by ts limit %s', (int(j), int(total - len(test_ts))-2 ))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
     num_req_train = data[:, 1]
@@ -195,7 +195,7 @@ plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+plt.savefig('../resutls'
            '/main_reconstruct_from_imf_'+str(start_imf) + '_Gans_LSTM.png', dpi=600)
 plt.pause(7)
 plt.close()

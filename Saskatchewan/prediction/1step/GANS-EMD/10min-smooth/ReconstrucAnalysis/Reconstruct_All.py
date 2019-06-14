@@ -16,7 +16,7 @@ cur0=conn.cursor()
 
 
 
-start_imf=3
+start_imf=1
 
 def mean_absolute_percentage_error(y_true, y_pred):
     #y_true,y_pred=np.abs(y_true),np.abs(y_pred)
@@ -29,7 +29,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
     plt.xlabel('MAPE')
     plt.ylabel('frequency')
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+    plt.savefig('../resutls'
                 '/MAPE_from_imf_' + str(start_imf) + '.png', dpi=600)
     plt.pause(3)
     plt.close()
@@ -151,14 +151,14 @@ plt.plot(test_ts, main_test_req_, color='blue',alpha=0.5,
 plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
          label='Prediction Req')
 ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.4)
-plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.9,
+plt.plot(ts,main_test_req_,'-',color='blue',label='Real Req',alpha=0.9)
+plt.plot(ts,main_test_req_pred_,'-.',color='green',alpha=0.4,
          label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
 plt.xlabel('TS for test part')
 plt.ylabel('Num of Req')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/10min-smooth/resutls'
+plt.savefig('../resutls'
             '/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=600)
 plt.pause(7)
 plt.close()

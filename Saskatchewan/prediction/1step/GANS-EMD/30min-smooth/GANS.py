@@ -102,7 +102,7 @@ class GAN():
 
 
         tmp=LSTM(
-            20,
+            40,
             return_sequences=False, dropout=0.1, recurrent_dropout=0.5)(tmp)
         # model.add(Dropout(0.2))
 
@@ -277,7 +277,7 @@ class GAN():
         plt.plot(g_loss_predictions, color='green', label='g_loss_predictions')
         plt.legend()
         plt.grid()
-        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/30min-smooth/resutls'
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/30min-smooth/resutls'
                     '/imf' + str(imf_index) + '/losses' + '.png', dpi=700)
         plt.pause(4)
         plt.close()
@@ -405,7 +405,7 @@ class GAN():
                             ' RMSE=%.4f  , RMSRE=%.4f  ' % (
                                 map_denormalize, rms_denormalize, rmsre_denorm))
         plt.legend()
-        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/GANS-EMD/30min-smooth/resutls'
+        plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/30min-smooth/resutls'
                     '/imf' + str(imf_index) + '/prediction_original' + '.png', dpi=700)
         plt.pause(5)
         plt.close()
@@ -425,8 +425,8 @@ if __name__ == '__main__':
     norm_version = 1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
 
-    for imf_index in range(3,4):
-        epoches=100 if imf_index<=4 else 20
+    for imf_index in range(1,20):
+        epoches=50 if imf_index<=4 else 20
         #epoches=100
 
         X_train, y_train, y_train_original_part, X_test, y_test, ts_train, ts_test, MaxAbsScalerObj = \
