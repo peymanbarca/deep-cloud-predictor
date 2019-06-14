@@ -51,7 +51,7 @@ def plot_results(imf,predicted_data,ts_test, true_data,ts_train,y_train,ms,map,
     plt.plot(ts_test, y_predicted_revert, color='orange', label='Prediction',alpha=0.9)
     plt.legend()
     plt.grid()
-    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/LSTM-EMD/20min-smooth/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
+    plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/LSTM-EMD/20min-smooth/main/results/imf' + str(imf) + '/IMF_Original_' + str(imf) + '.png', dpi=900)
     plt.pause(3)
     plt.close()
 
@@ -72,8 +72,8 @@ if __name__=='__main__':
     for i in range(1,18):
         global_start_time = time.time()
         imf_index = i
-        epochs = 500 if i <4 else 100
-        seq_len = 10
+        epochs = 400 if i <4 else 100
+        seq_len = 20
 
         norm_version=1  # v2= MinMaxScaler(0,1) , v1=MaxAbsScaler(-1,1)
 
@@ -82,7 +82,7 @@ if __name__=='__main__':
 
 
 
-        model = Train_LSTM.build_model([1, seq_len, 20,1])
+        model = Train_LSTM.build_model([1, seq_len, 30,1])
         from keras.utils.vis_utils import plot_model
         #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 

@@ -53,7 +53,7 @@ def build_model(layers):
 
 def load_data(seq_len,imf_index,ver):
     ts, num_req_normalize,MaxAbsScalerObj\
-        =normalizer.normalizer(imf_index,ver,plot=True)
+        =normalizer.normalizer(imf_index,ver,plot=False)
 
 
     sequence_length = seq_len + 1
