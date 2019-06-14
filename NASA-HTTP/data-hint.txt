@@ -3,25 +3,3 @@ NASA:
             PWs=0.5min       1min       5min    10min
             length= 53390    27864      6427      3085          --> almost 22 day
             EMDs: 23        20          16          15
-
-LSTM+EMD    done               done          done      done
-    train_len = 90% los==mse (1 step ahead)
-    (2 layer stacked, seq_len=10, layers=[1,seq_len,20,1],dropout=0.1,recurrent_dropout=0.5)
-
-LSTM+EMD    ?               ?           ? ('only on main imfs')
-    grid-search train_len = 90%
-    (2 layer stacked, seq_len=5,10,15,20 layers=[1,seq_len,[5,10,20,40],1],dropout=0.1,recurrent_dropout=0.5)
-
-SVR+EMD     done               done          done      done
- train_len = 90% (1 step ahead)
- (seq_len=20, without c epsilon gamma  & rbf kernel, fitted on train seq data predict on test data)
- in case of creating train & test sequenses look at prints in run main code ...
-
-
-SVR+EMD     done               done          done      done
- train_len = 90%
- (seq_len=20 and grid-search fitted on train seq data predict on test data *)
-
-CNN+LSTM        done            done        done   done
-    train_len = 90% loss=mse
-    (2 layer stacked, seq_len=10, layers=[1,seq_len,20,1],dropout=0.1,recurrent_dropout=0.5)
