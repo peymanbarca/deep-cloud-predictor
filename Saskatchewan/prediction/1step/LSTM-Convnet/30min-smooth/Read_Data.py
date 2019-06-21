@@ -11,9 +11,9 @@ cur0 =conn.cursor()
 
 def read_data():
     total_req_smooth = []
-    for imf_index in range(1, 21):
+    for imf_index in range(1, 20):
         print(imf_index)
-        cur0.execute('select ts,num_of_req from calgary_http_emd_30min_copy '
+        cur0.execute('select ts,num_of_req from saskatchewan_http_emd_30min_copy '
                      ' where imf_index={} and num_req_pred is null '
                      ' order by ts'.format(imf_index))
         data = np.array(cur0.fetchall())

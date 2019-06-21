@@ -13,8 +13,8 @@ def read_data():
     total_req_smooth = []
     for imf_index in range(1, 21):
         print(imf_index)
-        cur0.execute('select ts,num_of_req from calgary_http_emd_30min_copy '
-                     ' where imf_index={} and num_req_pred is null '
+        cur0.execute('select ts,num_of_req from nasa_http_emd_1min_copy '
+                     ' where imf_index={} '
                      ' order by ts'.format(imf_index))
         data = np.array(cur0.fetchall())
 
@@ -27,4 +27,4 @@ def read_data():
     for k in total_req_smooth:
         main_total_req_smooth__ += np.array(k, dtype=float)
 
-    return ts, main_total_req_smooth__
+    return ts,main_total_req_smooth__

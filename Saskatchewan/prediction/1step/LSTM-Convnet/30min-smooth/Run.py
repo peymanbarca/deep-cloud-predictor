@@ -75,7 +75,7 @@ def plot_results_denormalize(predicted_data,ts_test, true_data,ts_train,y_train,
 
 if __name__=='__main__':
     global_start_time = time.time()
-    epochs = 100
+    epochs = 500
     seq_len =25
 
 

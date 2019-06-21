@@ -32,7 +32,7 @@ def plot_results(predicted_data,ts_test, true_data,ts_train,y_train,rms,ms,map,m
     plt.xlabel('Time Symbol')
     plt.ylabel('Normalized Req')
     plt.savefig(
-            'results'
+            '/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/1step/LSTM-Convnet/1min-smooth/results'
             '/Normalized' + '.png',
             dpi=700)
 
@@ -64,7 +64,7 @@ def plot_results_denormalize(predicted_data,ts_test, true_data,ts_train,y_train,
     plt.xlabel('Time Symbol')
     plt.ylabel(' Original Req')
     plt.savefig(
-            'results'
+            '/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/1step/LSTM-Convnet/1min-smooth/results'
             '/Main' + '.png',
             dpi=700)
 
@@ -75,7 +75,7 @@ def plot_results_denormalize(predicted_data,ts_test, true_data,ts_train,y_train,
 
 if __name__=='__main__':
     global_start_time = time.time()
-    epochs = 100
+    epochs = 50
     seq_len =25
 
 
@@ -84,7 +84,7 @@ if __name__=='__main__':
 
 
 
-    model = Train_LSTM.build_model([1,seq_len, 50,10, 1])
+    model = Train_LSTM.build_model([1,seq_len, 40, 1])
     #from keras.utils.vis_utils import plot_model
     #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
@@ -96,7 +96,7 @@ if __name__=='__main__':
     history=model.fit(
         X_train,
         y_train,
-        batch_size=128,
+        batch_size=256,
         nb_epoch=epochs,
         validation_split=0.1)
 
@@ -113,7 +113,7 @@ if __name__=='__main__':
     plt.title('Training and validation loss')
     plt.legend()
     plt.savefig(
-            'results'
+            '/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/1step/LSTM-Convnet/1min-smooth/results'
             '/Normalized_Train_Loss' + '.png',
             dpi=700)
     plt.pause(3)
@@ -158,14 +158,14 @@ if __name__=='__main__':
         plt.ylabel('frequency')
         plt.grid()
         plt.savefig(
-                'results'
+                '/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/1step/LSTM-Convnet/1min-smooth/results'
                 '/MAPE' + '.png', dpi=600)
 
 
         plt.pause(3)
         plt.close()
         ape = sorted(ape)
-        indexes = np.where(ape < np.percentile(ape, 90))[0]
+        indexes = np.where(ape < np.percentile(ape, 95))[0]
         ape = [ape[k] for k in indexes]
         # print(ape)
 
@@ -181,7 +181,7 @@ if __name__=='__main__':
                 # if abs(y_true[k])!=0  and k not in z1 and k not in z2:
                 ape.append(abs((y_pred[k] - y_true[k]) / y_true[k]))
         ape = sorted(ape)
-        indexes = np.where(ape < np.percentile(ape, 90))[0]
+        indexes = np.where(ape < np.percentile(ape, 95))[0]
         ape = [ape[k] for k in indexes]
         return np.median(np.array(ape)) * 100
 
@@ -194,7 +194,7 @@ if __name__=='__main__':
                 # if abs(y_true[k])!=0  and k not in z1 and k not in z2:
                 ape.append(pow(((y_true[k] - y_pred[k]) / y_true[k]), 2))
         ape = sorted(ape)
-        indexes = np.where(ape < np.percentile(ape, 90))[0]
+        indexes = np.where(ape < np.percentile(ape, 95))[0]
         ape = [ape[k] for k in indexes]
         return sqrt(np.mean(np.array(ape)))
 
