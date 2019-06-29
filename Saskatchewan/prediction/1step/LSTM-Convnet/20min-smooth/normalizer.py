@@ -24,7 +24,7 @@ def normalizer(plot=False):
     # max2 = max(num_req_normalize)
     # print('min = ', min2, ' max = ', max2)
 
-    num_req_normalize = perform_knn(num_req_normalize)
+    # num_req_normalize = perform_knn(num_req_normalize)
     print('min = ',min(num_req_normalize),' max = ',max(num_req_normalize))
 
     if plot:
