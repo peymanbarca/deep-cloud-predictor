@@ -14,7 +14,7 @@ def read_data():
     for imf_index in range(1, 21):
         print(imf_index)
         cur0.execute('select ts,num_of_req from nasa_http_emd_1min_copy '
-                     ' where imf_index={} '
+                     ' where imf_index={} and num_req_pred is null '
                      ' order by ts'.format(imf_index))
         data = np.array(cur0.fetchall())
 
