@@ -1,5 +1,7 @@
 from matplotlib import pyplot as plt
 
+steps = [1,2,3,4,5]
+
 sasc_30min_lstm=[14.69,14.98,15.50,16.12,17.74]
 sasc_30min_lstm_cnn=[7.79,7.56,8.14,8.33,9.07]
 sasc_30min_svr=[11.02,12.35,12.21,13.96,15.85]
@@ -23,3 +25,45 @@ sasc_10min_emd_svr=[11.20,11,44,12,91,13.04,13.88]
 sasc_10min_emd_lstm=[6.62,7.23,8.38,9.96,11.04]
 sasc_10min_emd_gan=[9.40,9.56,9.67,9.89,10.02]
 sasc_10min_our=[6.58,6.34,6.90,7.81,7.59]
+
+plt.figure(figsize=(12,14))
+plt.subplot(311)
+plt.plot(steps,sasc_30min_lstm,'.',color='blue',label='LSTM')
+plt.plot(steps,sasc_30min_lstm_cnn,color='red',label='LSTM+CNN')
+plt.plot(steps,sasc_30min_emd_lstm,'*',color='yellow',label='EMD+LSTM')
+plt.plot(steps,sasc_30min_emd_gan,'-.',color='orange',label='EMD+GAN')
+plt.plot(steps,sasc_30min_our,'-*',color='black',label='Ours')
+plt.subplots_adjust(hspace = 0.45)
+plt.title('PWS = 30 Min')
+plt.ylabel('MAPE %')
+#plt.xlabel('Step Ahead')
+plt.grid()
+plt.legend(bbox_to_anchor=(0.95, 0.8))
+
+plt.subplot(312)
+plt.plot(steps,sasc_20min_lstm,'.',color='blue',label='LSTM')
+plt.plot(steps,sasc_20min_lstm_cnn,color='red',label='LSTM+CNN')
+plt.plot(steps,sasc_20min_emd_lstm,'*',color='yellow',label='EMD+LSTM')
+plt.plot(steps,sasc_20min_emd_gan,'-.',color='orange',label='EMD+GAN')
+plt.plot(steps,sasc_20min_our,'-*',color='black',label='Ours')
+plt.subplots_adjust(hspace = 0.45)
+plt.title('PWS = 20 Min')
+plt.ylabel('MAPE %')
+#plt.xlabel('Step Ahead')
+plt.grid()
+plt.legend(bbox_to_anchor=(0.95, 0.8))
+
+plt.subplot(313)
+plt.plot(steps,sasc_10min_lstm,'.',color='blue',label='LSTM')
+plt.plot(steps,sasc_10min_lstm_cnn,color='red',label='LSTM+CNN')
+plt.plot(steps,sasc_10min_emd_lstm,'*',color='yellow',label='EMD+LSTM')
+plt.plot(steps,sasc_10min_emd_gan,'-.',color='orange',label='EMD+GAN')
+plt.plot(steps,sasc_10min_our,'-*',color='black',label='Ours')
+plt.title('PWS = 10 Min')
+plt.ylabel('MAPE %')
+plt.xlabel('Forcasting Steps Ahead')
+plt.grid()
+plt.legend(bbox_to_anchor=(0.95, 0.8))
+
+plt.savefig("sasc-steps-cmp.png")
+plt.show()

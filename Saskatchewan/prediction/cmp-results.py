@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+import numpy as np
 
 sasc_30min_lstm=[14.69]
 sasc_30min_lstm_cnn=[7.79]
@@ -23,3 +24,61 @@ sasc_10min_emd_svr=[11.20]
 sasc_10min_emd_lstm=[6.62]
 sasc_10min_emd_gan=[9.40]
 sasc_10min_our=[6.58]
+
+# -----------------------#
+# data to plot
+n_groups = 3
+Ours = (9.09,9.33,6.58)
+EMD_LSTM = (9.56,9.69,6.62)
+LSTM = (14.69,13.68,11.19)
+EMD_GAN = (11.73,12.20,9.40)
+EMD_SVR = (15.78,14.30,11.20)
+CNN_LSTM = (7.79,8.55,8.36)
+SVR = (11.02,11.06,16.71)
+
+# create plot
+fig, ax = plt.subplots()
+index = np.arange(3)
+print(index)
+bar_width = 0.1
+opacity = 0.8
+
+rects1 = plt.bar(index, Ours,bar_width,
+alpha=opacity,
+color='g',
+label='Ours')
+
+rects2 = plt.bar(index+bar_width ,  EMD_LSTM,bar_width,
+alpha=opacity,
+color='b',
+label='EMD_LSTM')
+
+rects3 = plt.bar(index+2*bar_width , EMD_GAN,bar_width,
+alpha=opacity,
+color='cyan',
+label='EMD_GAN')
+
+rects4 = plt.bar(index+3*bar_width ,  EMD_SVR,bar_width,
+alpha=opacity,
+color='yellow',
+label='EMD_SVR')
+
+rects5 = plt.bar(index+4*bar_width, CNN_LSTM,bar_width,
+alpha=opacity,
+color='black',
+label='CNN_LSTM')
+
+rects6 = plt.bar(index+5*bar_width , SVR,bar_width,
+alpha=opacity,
+color='r',
+label='SVR')
+
+plt.xlabel('PWS (Minute)')
+plt.ylabel('MAPE %')
+plt.title('Saskatchewan HTTP Trace')
+plt.xticks(index + bar_width, ('30 min', '20 min', '10 min'))
+plt.legend()
+
+# plt.tight_layout()
+plt.savefig("Saskatchewan-mape-cmp.png")
+plt.show()
