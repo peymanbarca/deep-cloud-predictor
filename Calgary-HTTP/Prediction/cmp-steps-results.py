@@ -1,0 +1,25 @@
+from matplotlib import pyplot as plt
+
+calgary_60min_lstm=[16.14,17.81,17.45,19.74,2.41]
+calgary_60min_lstm_cnn=[11.98,12.34,13.16,13.86,13.65]
+calgary_60min_svr=[15.38,17.31,17.84,19.56,20.21]
+calgary_60min_emd_svr=[12.35,12.76,13.02,15.41,17.86]
+calgary_60min_emd_lstm=[14.70,14.67,15.98,16.22,17.14]
+calgary_60min_emd_gan=[13.63,13.76,14.41,14.56,14.98]
+calgary_60min_our=[12.10,12.34,12.21,12.98,13.05]
+
+calgary_30min_lstm=[15.72,]
+calgary_30min_lstm_cnn=[13.41,]
+calgary_30min_svr=[21.31,]
+calgary_30min_emd_svr=[9.17,]
+calgary_30min_emd_lstm=[10.03,]
+calgary_30min_emd_gan=[12.29,]
+calgary_30min_our=[8.53,]
+
+calgary_10min_lstm=[20.28,]
+calgary_10min_lstm_cnn=[11.71,]
+calgary_10min_svr=[25.55,]
+calgary_10min_emd_svr=[11.90,]
+calgary_10min_emd_lstm=[14.70,]
+calgary_10min_emd_gan=[11.40,]
+calgary_10min_our=[12.10,]

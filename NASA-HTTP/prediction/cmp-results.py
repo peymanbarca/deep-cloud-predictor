@@ -1,0 +1,25 @@
+from matplotlib import pyplot as plt
+
+nasa_10min_lstm=[12.66]
+nasa_10min_lstm_cnn=[13.06]
+nasa_10min_svr=[14.15]
+nasa_10min_emd_svr=[11.59]
+nasa_10min_emd_lstm=[8.83]
+nasa_10min_emd_gan=[11.33]
+nasa_10min_our=[8.69]
+
+nasa_5min_lstm=[14.37]
+nasa_5min_lstm_cnn=[14.68]
+nasa_5min_svr=[16.93]
+nasa_5min_emd_svr=[9.93]
+nasa_5min_emd_lstm=[10.26]
+nasa_5min_emd_gan=[9.59]
+nasa_5min_our=[9.73]
+
+nasa_1min_lstm=[8.33]
+nasa_1min_lstm_cnn=[9.94]
+nasa_1min_svr=[9.75]
+nasa_1min_emd_svr=[5.85]
+nasa_1min_emd_lstm=[9.14]
+nasa_1min_emd_gan=[6.99]
+nasa_1min_our=[6.85]

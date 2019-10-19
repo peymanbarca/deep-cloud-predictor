@@ -1,0 +1,25 @@
+from matplotlib import pyplot as plt
+
+sasc_30min_lstm=[14.69]
+sasc_30min_lstm_cnn=[7.79]
+sasc_30min_svr=[11.02]
+sasc_30min_emd_svr=[15.78]
+sasc_30min_emd_lstm=[9.56]
+sasc_30min_emd_gan=[11.73]
+sasc_30min_our=[9.09]
+
+sasc_20min_lstm=[13.68]
+sasc_20min_lstm_cnn=[8.55]
+sasc_20min_svr=[11.06]
+sasc_20min_emd_svr=[14.30]
+sasc_20min_emd_lstm=[9.69]
+sasc_20min_emd_gan=[12.20]
+sasc_20min_our=[9.33]
+
+sasc_10min_lstm=[11.19]
+sasc_10min_lstm_cnn=[8.36]
+sasc_10min_svr=[16.71]
+sasc_10min_emd_svr=[11.20]
+sasc_10min_emd_lstm=[6.62]
+sasc_10min_emd_gan=[9.40]
+sasc_10min_our=[6.58]
