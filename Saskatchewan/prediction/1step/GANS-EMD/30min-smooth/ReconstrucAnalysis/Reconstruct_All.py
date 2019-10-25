@@ -143,23 +143,32 @@ MAPE=mean_absolute_percentage_error(main_test_req_,main_test_req_pred_)
 MEAPE=median_absolute_percentage_error(main_test_req_,main_test_req_pred_)
 RMSRE=mean_percentage_r_error(main_test_req_,main_test_req_pred_)
 
+
 fig = plt.figure(facecolor='white',figsize=(12, 7))
 ax = fig.add_subplot(211)
-plt.plot(ts_train,main_train_req__,color='red',label='Real Req Train Data')
+plt.plot(ts_train,main_train_req__,color='red',label='Training Set')
 plt.plot(test_ts, main_test_req_, color='blue',alpha=0.5,
-         label='Test Req')
+         label='Testing Set')
 plt.plot(test_ts,main_test_req_pred_,'-.',color='green',
-         label='Prediction Req')
-ax = fig.add_subplot(212)
-plt.plot(ts,main_test_req_,'-.',color='blue',label='Real Req',alpha=0.9)
-plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.4,
-         label=('Prediction Req, MAPE = %.4f%% ,  RMSE=%.4f , MPE=%.4f%% ,\n  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MPE,MEAPE,RMSRE)))
-plt.xlabel('TS for test part')
-plt.ylabel('Num of Req')
+         label='Prediction')
+plt.ylabel('Number of Requests')
 plt.legend()
 plt.grid()
-plt.savefig('/home/vacek/Cloud/cloud-predictor/Saskatchewan/prediction/1step/GANS-EMD/30min-smooth/resutls'
-            '/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=600)
+ax = fig.add_subplot(212)
+plt.subplots_adjust(hspace = 0.3)
+plt.plot(ts,main_test_req_,'-',color='blue',label='Testing Set',alpha=0.4)
+plt.plot(ts,main_test_req_pred_,'-',color='green',alpha=0.9,
+         label='Prediction')
+plt.plot(ts,main_test_req_-main_test_req_pred_,'-',color='black',alpha=0.7,
+         label=('Error'))
+plt.title(' MAPE = %.4f%% ,  RMSE=%.4f ,  MEAPE=%.4f%%, RMSRE=%4f '% (MAPE,rms,MEAPE,RMSRE)
+          ,backgroundcolor='black',color='white')
+plt.xlabel('Time Index')
+plt.ylabel('Number of Requests')
+plt.legend()
+plt.grid()
+plt.savefig('../resutls'
+            '/main_reconstruct_from_imf_'+str(start_imf) + '.png', dpi=500)
 plt.pause(7)
 plt.close()
 
