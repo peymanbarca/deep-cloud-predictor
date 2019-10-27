@@ -12,3 +12,5 @@ def denorm_v2(ts_normalize,MaxAbsScalerObj):
     print(min2,max2)
     return  ts_revert
 
+def denorm_v3(ts_normalize,max1):
+    return ts_normalize*max1

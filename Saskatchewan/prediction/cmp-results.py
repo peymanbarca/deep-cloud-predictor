@@ -46,31 +46,31 @@ opacity = 0.8
 rects1 = plt.bar(index, Ours,bar_width,
 alpha=opacity,
 color='g',
-label='Ours')
+label='ELG')
 
 rects2 = plt.bar(index+bar_width ,  EMD_LSTM,bar_width,
 alpha=opacity,
-color='b',
+color='#1d2d38',
 label='EMD_LSTM')
 
 rects3 = plt.bar(index+2*bar_width , EMD_GAN,bar_width,
 alpha=opacity,
-color='cyan',
+color='#255e85',
 label='EMD_GAN')
 
 rects4 = plt.bar(index+3*bar_width ,  EMD_SVR,bar_width,
 alpha=opacity,
-color='yellow',
+color='#6593F5',
 label='EMD_SVR')
 
 rects5 = plt.bar(index+4*bar_width, CNN_LSTM,bar_width,
 alpha=opacity,
-color='black',
+color='#0F52BA',
 label='CNN_LSTM')
 
 rects6 = plt.bar(index+5*bar_width , SVR,bar_width,
 alpha=opacity,
-color='r',
+color='#000080',
 label='SVR')
 
 plt.xlabel('PWS (Minute)')
@@ -78,7 +78,7 @@ plt.ylabel('MAPE %')
 plt.title('Saskatchewan HTTP Trace')
 plt.xticks(index + bar_width, ('30 min', '20 min', '10 min'))
 plt.legend()
-
+plt.grid(True, 'major', 'y', ls='--', lw=.5, c='k', alpha=.3)
 # plt.tight_layout()
 plt.savefig("Saskatchewan-mape-cmp.png")
 plt.show()

@@ -52,7 +52,7 @@ def build_model(layers):
     return model
 
 def load_data(seq_len):
-    ts, num_req_normalize, minMaxScaler\
+    ts, num_req_normalize, minMaxScaler,mx\
         =normalizer.normalizer(plot=True)
 
 
@@ -93,7 +93,7 @@ def load_data(seq_len):
     x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1)) # make 3D
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
-    return [x_train, y_train,y_train_original_part, x_test, y_test,ts_train,ts_test,minMaxScaler]
+    return [x_train, y_train,y_train_original_part, x_test, y_test,ts_train,ts_test,minMaxScaler,mx]
 
 def predict_point_by_point(model, data):
     #Predict each timestep given the last sequence of true data, in effect only predicting 1 step ahead each time

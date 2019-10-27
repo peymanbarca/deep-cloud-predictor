@@ -42,7 +42,7 @@ def normalizer(plot=False):
         plt.pause(3)
         plt.close()
 
-    return ts,num_req_normalize,minMaxScaler
+    return ts,num_req_normalize,minMaxScaler,max(num_req)
 
 
 

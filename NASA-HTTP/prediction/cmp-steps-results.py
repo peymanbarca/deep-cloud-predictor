@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 
 steps = [1,2,3,4,5]
+xi = list(range(1,len(steps)+1))
 
 nasa_10min_lstm=[12.66,13.67,13.89,15.02,15.90]
 nasa_10min_lstm_cnn=[13.06,13.54,14.01,14.98,16.02]
@@ -28,44 +29,46 @@ nasa_1min_our=[6.85,6.36,7.42,7.13,7.96]
 
 
 
-plt.figure(figsize=(10,14))
+plt.figure(figsize=(12,14))
 plt.subplot(311)
 plt.plot(steps,nasa_10min_lstm,'.',color='blue',label='LSTM')
 plt.plot(steps,nasa_10min_lstm_cnn,color='red',label='LSTM+CNN')
-plt.plot(steps,nasa_10min_emd_lstm,'*',color='yellow',label='EMD+LSTM')
+plt.plot(steps,nasa_10min_emd_lstm,'-*',color='yellow',label='EMD+LSTM')
 plt.plot(steps,nasa_10min_emd_gan,'-.',color='orange',label='EMD+GAN')
-plt.plot(steps,nasa_10min_our,'-*',color='black',label='Ours')
+plt.plot(steps,nasa_10min_our,'-*',color='black',label='ELG')
 plt.subplots_adjust(hspace = 0.45)
 plt.title('PWS = 10 Min')
 plt.ylabel('MAPE %')
+plt.xticks(xi, steps)
 # plt.xlabel('Step Ahead')
 plt.grid()
-plt.legend(bbox_to_anchor=(0.95, 0.8))
+plt.legend(bbox_to_anchor=(0.97, 0.8))
 
 plt.subplot(312)
 plt.plot(steps,nasa_5min_lstm,'.',color='blue',label='LSTM')
 plt.plot(steps,nasa_5min_lstm_cnn,color='red',label='LSTM+CNN')
-plt.plot(steps,nasa_5min_emd_lstm,'*',color='yellow',label='EMD+LSTM')
+plt.plot(steps,nasa_5min_emd_lstm,'-*',color='yellow',label='EMD+LSTM')
 plt.plot(steps,nasa_5min_emd_gan,'-.',color='orange',label='EMD+GAN')
-plt.plot(steps,nasa_5min_our,'-*',color='black',label='Ours')
+plt.plot(steps,nasa_5min_our,'-*',color='black',label='ELG')
 plt.subplots_adjust(hspace = 0.45)
 plt.title('PWS = 5 Min')
 plt.ylabel('MAPE %')
+plt.xticks(xi, steps)
 # plt.xlabel('Step Ahead')
 plt.grid()
-plt.legend(bbox_to_anchor=(0.95, 0.8))
+plt.legend(bbox_to_anchor=(0.97, 0.8))
 
 plt.subplot(313)
 plt.plot(steps,nasa_1min_lstm,'.',color='blue',label='LSTM')
 plt.plot(steps,nasa_1min_lstm_cnn,color='red',label='LSTM+CNN')
-plt.plot(steps,nasa_1min_emd_lstm,'*',color='yellow',label='EMD+LSTM')
+plt.plot(steps,nasa_1min_emd_lstm,'-*',color='yellow',label='EMD+LSTM')
 plt.plot(steps,nasa_1min_emd_gan,'-.',color='orange',label='EMD+GAN')
-plt.plot(steps,nasa_1min_our,'-*',color='black',label='Ours')
+plt.plot(steps,nasa_1min_our,'-*',color='black',label='ELG')
 plt.title('PWS = 1 Min')
 plt.ylabel('MAPE %')
 plt.xlabel('Forcasting Steps Ahead')
 plt.grid()
-plt.legend(bbox_to_anchor=(0.95, 0.8))
-
+plt.legend(bbox_to_anchor=(0.97, 0.8))
+plt.xticks(xi, steps)
 plt.savefig("Nasa-steps-cmp.png")
 plt.show()
