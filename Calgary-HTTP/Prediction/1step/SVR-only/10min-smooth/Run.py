@@ -17,7 +17,7 @@ cur=conn.cursor()
 
 
 norm_Ver=1 # 1 = maxAbsSclaer (-1,1) 2=minMaxSclaer (0,1)
-seq_lag=20
+seq_lag=40
 train_factor=0.9
 
 
@@ -144,18 +144,42 @@ except:
     meap=0
     rmsre=0
 
-fig = plt.figure(facecolor='white',figsize=(10, 8))
-plt.subplot(3,1,1)
-plt.plot(ts_train,y_train,label='Train Data',alpha=0.8,color='red')
-plt.plot(ts_test,y_pred,label='Prediction Data',alpha=0.9)
-plt.plot(ts_test,y_test,label='Test Data',alpha=0.3)
+# fig = plt.figure(facecolor='white',figsize=(10, 8))
+# plt.subplot(3,1,1)
+# plt.plot(ts_train,y_train,label='Train Data',alpha=0.8,color='red')
+# plt.plot(ts_test,y_pred,label='Prediction Data',alpha=0.9)
+# plt.plot(ts_test,y_test,label='Test Data',alpha=0.3)
+# plt.legend()
+# plt.subplot(3,1,2)
+# plt.plot(y_test,label='Test Data',color='orange')
+# plt.legend()
+# plt.subplot(3,1,3)
+# plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f%% ,  RMSE=%.4f  ,\n  MEAPE=%.4f%% , RMSRE=%.4f '% (map,rms,meap,rmsre))
+# plt.legend()
+
+fig = plt.figure(facecolor='white',figsize=(12, 7))
+ax = fig.add_subplot(211)
+plt.plot(ts_train,y_train,color='red',label='Training Set')
+plt.plot(ts_test, y_test, color='blue',alpha=0.4,
+         label='Testing Set')
+plt.plot(ts_test,y_pred,'-.',color='green',
+         label='Prediction',alpha=0.9)
+plt.ylabel('Number of Requests')
 plt.legend()
-plt.subplot(3,1,2)
-plt.plot(y_test,label='Test Data',color='orange')
+plt.grid()
+ax = fig.add_subplot(212)
+plt.subplots_adjust(hspace = 0.3)
+plt.plot(ts_test,y_test,'-',color='blue',label='Testing Set',alpha=0.4)
+plt.plot(ts_test,y_pred,'-',color='green',alpha=0.9,
+         label='Prediction')
+plt.plot(ts_test,y_test-y_pred,'-',color='black',alpha=0.7,
+         label=('Error'))
+plt.title(' MAPE = %.4f%% ,  RMSE=%.4f ,  MEAPE=%.4f%%, RMSRE=%4f '% (map,rms,meap,rmsre)
+          ,backgroundcolor='black',color='white')
+plt.xlabel('Time Index')
+plt.ylabel('Number of Requests')
 plt.legend()
-plt.subplot(3,1,3)
-plt.plot(y_pred,label='Prediction Real Data, MAPE = %.4f%% ,  RMSE=%.4f  ,\n  MEAPE=%.4f%% , RMSRE=%.4f '% (map,rms,meap,rmsre))
-plt.legend()
+plt.grid()
 plt.savefig('results'
           '/normalize' + '.png', dpi=900)
 plt.pause(5)
@@ -163,11 +187,13 @@ plt.close()
 
 
 ''' denoramalize the actual and predicted data '''
+min_train, max_train, ts_train_revert = denorm_v2(y_train, MaxAbsScalerObj)
 min_test, max_test, ts_test_revert = denorm_v2(y_test, MaxAbsScalerObj)
 min_predicted, max_predicted, ts_predicted_revert = denorm_v2(y_pred, MaxAbsScalerObj)
 print('min_test=%s , max_test=%s', (min_test, max_test))
 print('min_predicted=%s , max_predicted=%s', (min_predicted, max_predicted))
 
+ts_train_revert=np.reshape(ts_train_revert, (ts_train_revert.size,))
 ts_test_revert=np.reshape(ts_test_revert, (ts_test_revert.size,))
 ts_predicted_revert=np.reshape(ts_predicted_revert, (ts_predicted_revert.size,))
 
@@ -186,18 +212,43 @@ except:
     rmsre_denorm=0
     rms_denormalize = sqrt(mean_squared_error(ts_test_revert, ts_predicted_revert))
 
-fig = plt.figure(facecolor='white',figsize=(10, 8))
-plt.subplot(3,1,1)
-plt.plot(ts_predicted_revert,label='Prediction Real Data',alpha=0.8)
-plt.plot(ts_test_revert,label='Test Real Data',alpha=0.3)
+
+# fig = plt.figure(facecolor='white',figsize=(10, 8))
+# plt.subplot(3,1,1)
+# plt.plot(ts_predicted_revert,label='Prediction Real Data',alpha=0.8)
+# plt.plot(ts_test_revert,label='Test Real Data',alpha=0.3)
+# plt.legend()
+# plt.subplot(3,1,2)
+# plt.plot(ts_test_revert,label='Test Real Data',color='orange')
+# plt.legend()
+# plt.subplot(3,1,3)
+# plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f%% ,\n '
+#                                    ' RMSE=%.4f  , RMSRE=%.4f  '% (map_denormalize,rms_denormalize,rmsre_denorm))
+# plt.legend()
+
+fig = plt.figure(facecolor='white',figsize=(12, 7))
+ax = fig.add_subplot(211)
+plt.plot(ts_train,ts_train_revert,color='red',label='Training Set')
+plt.plot(ts_test, ts_test_revert, color='blue',alpha=0.4,
+         label='Testing Set')
+plt.plot(ts_test,ts_predicted_revert,'-.',color='green',
+         label='Prediction',alpha=0.9)
+plt.ylabel('Number of Requests')
 plt.legend()
-plt.subplot(3,1,2)
-plt.plot(ts_test_revert,label='Test Real Data',color='orange')
+plt.grid()
+ax = fig.add_subplot(212)
+plt.subplots_adjust(hspace = 0.3)
+plt.plot(ts_test,ts_test_revert,'-',color='blue',label='Testing Set',alpha=0.4)
+plt.plot(ts_test,ts_predicted_revert,'-',color='green',alpha=0.9,
+         label='Prediction')
+plt.plot(ts_test,ts_test_revert-ts_predicted_revert,'-',color='black',alpha=0.7,
+         label=('Error'))
+plt.title(' MAPE = %.4f%% ,  RMSE=%.4f ,  MEAPE=%.4f%%, RMSRE=%4f '% (map,rms,meap,rmsre)
+          ,backgroundcolor='black',color='white')
+plt.xlabel('Time Index')
+plt.ylabel('Number of Requests')
 plt.legend()
-plt.subplot(3,1,3)
-plt.plot(ts_predicted_revert,label='Prediction Real Data, MAPE = %.4f%% ,\n '
-                                   ' RMSE=%.4f  , RMSRE=%.4f  '% (map_denormalize,rms_denormalize,rmsre_denorm))
-plt.legend()
+plt.grid()
 plt.savefig('results'
              + '/original' + '.png', dpi=900)
 plt.pause(5)
