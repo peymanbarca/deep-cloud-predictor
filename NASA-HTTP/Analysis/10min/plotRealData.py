@@ -23,12 +23,12 @@ ts = data[:, 0]
 num_req = data[:, 1]
 
 
-fig = plt.figure(facecolor='white', figsize=(14, 8))
-plt.plot(ts ,num_req,'-',  color='red',alpha=0.9)
-plt.grid()
+fig = plt.figure(facecolor='white', figsize=(12, 8))
+plt.plot(ts ,num_req,'-',  color='blue',alpha=0.7)
+plt.grid(alpha=0.4)
 plt.xlabel('Time Index')
-plt.ylabel('Number of Requests')
+plt.ylabel('Number of Requests (Per 10 Minutes)')
 plt.savefig(''
-            'Main-Signal' + '.png', dpi=700)
+            'Main-Signal' + '.png', dpi=500)
 plt.pause(5)
 plt.close()

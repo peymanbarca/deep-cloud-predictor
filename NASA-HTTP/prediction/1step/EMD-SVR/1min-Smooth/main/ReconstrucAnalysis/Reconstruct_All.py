@@ -112,7 +112,7 @@ for i in range(start_imf,21):
     total=np.array(total)[0][0]
     cur0.execute('select ts,num_of_req from nasa_http_emd_1min_copy where imf_index=%s and '
                  'num_req_pred is null and num_req_pred_svr is null '
-                 ' order by ts limit %s offset 2000 ', (int(emd_imf),int(total-len(test_ts))))
+                 ' order by ts limit %s offset 2000 ', (int(emd_imf),int(total)))
     data = np.array(cur0.fetchall())
     ts_train = data[:, 0]
     num_req_train = data[:, 1]
