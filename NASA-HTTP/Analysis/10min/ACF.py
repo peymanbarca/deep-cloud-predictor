@@ -23,12 +23,12 @@ data = np.array(cur0.fetchall())
 ts = data[:, 0]
 num_req = data[:, 1]
 
-lags=200
+lags=100
 sm.graphics.tsa.plot_acf(num_req, lags=lags)
 plt.xlabel('ACF')
 plt.ylabel('sample lags')
-plt.savefig('/home/vacek/Cloud/cloud-predictor/NASA-HTTP/prediction/GANS-EMD/10min/resutls/Analysis'
-            '/Main-Signal_ACF'+str(lags) + '.png', dpi=700)
+plt.savefig(''
+            'Main-Signal_ACF'+str(lags) + '.png', dpi=700)
 plt.pause(5)
 plt.close()
 
