@@ -37,6 +37,8 @@ EMD_SVR = (nasa_10min_emd_svr[0],nasa_5min_emd_svr[0],nasa_1min_emd_svr[0])
 CNN_LSTM = (nasa_10min_lstm_cnn[0],nasa_5min_lstm_cnn[0],nasa_1min_lstm_cnn[0])
 SVR = (nasa_10min_svr[0],nasa_5min_svr[0],nasa_1min_svr[0])
 
+plt.rc('legend', fontsize=6)
+
 # create plot
 fig, ax = plt.subplots()
 index = np.arange(3)
@@ -76,10 +78,11 @@ label='SVR')
 
 plt.xlabel('PWS (Minute)')
 plt.ylabel('MAPE %')
+plt.ylim([4,20])
 plt.title('NASA HTTP Trace')
 plt.xticks(index + bar_width, ('10', '5', '1'))
 plt.legend()
 plt.grid(True, 'major', 'y', ls='--', lw=.5, c='k', alpha=.3)
 # plt.tight_layout()
-plt.savefig("NASA-mape-cmp.png",dpi=500)
+plt.savefig("NASA-mape-cmp.png",dpi=700)
 plt.show()

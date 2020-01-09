@@ -36,6 +36,8 @@ EMD_SVR = (sasc_30min_emd_svr[0],sasc_20min_emd_svr[0],sasc_10min_emd_svr[0])
 CNN_LSTM = (sasc_30min_lstm_cnn[0],sasc_20min_lstm_cnn[0],sasc_10min_lstm_cnn[0])
 SVR = (sasc_30min_svr[0],sasc_20min_svr[0],sasc_10min_svr[0])
 
+plt.rc('legend', fontsize=6)
+
 # create plot
 fig, ax = plt.subplots()
 index = np.arange(3)
@@ -75,10 +77,11 @@ label='SVR')
 
 plt.xlabel('PWS (Minute)')
 plt.ylabel('MAPE %')
+plt.ylim([4,20])
 plt.title('Saskatchewan HTTP Trace')
 plt.xticks(index + bar_width, ('30', '20', '10'))
 plt.legend()
 plt.grid(True, 'major', 'y', ls='--', lw=.5, c='k', alpha=.3)
 # plt.tight_layout()
-plt.savefig("Saskatchewan-mape-cmp.png",dpi=500)
+plt.savefig("Saskatchewan-mape-cmp.png",dpi=700)
 plt.show()

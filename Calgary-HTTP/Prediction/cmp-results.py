@@ -36,6 +36,8 @@ EMD_SVR = (calgary_60min_emd_svr[0],calgary_30min_emd_svr[0],calgary_10min_emd_s
 CNN_LSTM = (calgary_60min_lstm_cnn[0],calgary_30min_lstm_cnn[0],calgary_10min_lstm_cnn[0])
 SVR = (calgary_60min_svr[0],calgary_30min_svr[0],calgary_10min_svr[0])
 
+plt.rc('legend', fontsize=6)
+
 # create plot
 fig, ax = plt.subplots()
 index = np.arange(3)
@@ -75,10 +77,11 @@ label='SVR')
 
 plt.xlabel('PWS (Minute)')
 plt.ylabel('MAPE %')
+plt.ylim([5,26])
 plt.title('Calgary HTTP Trace')
 plt.xticks(index + bar_width, ('60', '30', '10'))
 plt.legend()
 plt.grid(True, 'major', 'y', ls='--', lw=.5, c='k', alpha=.3)
 # plt.tight_layout()
-plt.savefig("Calgary-mape-cmp.png",dpi=500)
+plt.savefig("Calgary-mape-cmp.png",dpi=700)
 plt.show()
